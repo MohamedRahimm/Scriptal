@@ -1,4 +1,4 @@
-import { Program, VarDeclaration } from "../../ast.ts"
+import { Program, VarDeclaration } from "../../frontend/ast.ts"
 import Environment from "../environment.ts"
 import { evaluate } from "../interpreter.ts"
 import { NullVal, RuntimeVal } from "../values.ts"
@@ -27,6 +27,9 @@ export function evalVarDeclaration(declaration: VarDeclaration, env: Environment
             break
         case ("str"):
             if (value.type !== "string") throw errorMsg
+            break
+        case ("obj"):
+            if(value.type!=="object") throw errorMsg
             break
     }
 

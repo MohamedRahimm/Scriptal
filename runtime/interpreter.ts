@@ -1,7 +1,7 @@
-import { ValueType, RuntimeVal, NullVal, BoolVal, StringVal } from "./values.ts";
-import { BinaryExpr, NodeType, NumericLiteral, Statement, Program, Identifier, VarDeclaration, AssignmentExpr, Boolean, Null, String } from "../ast.ts"
+import { RuntimeVal, NullVal, BoolVal, StringVal } from "./values.ts";
+import { BinaryExpr, NumericLiteral, Statement, Program, Identifier, VarDeclaration, AssignmentExpr, Boolean, Null, String, ObjectLiteral } from "../frontend/ast.ts"
 import Environment from "./environment.ts";
-import { evalIdentifier, evalBinaryExpr, evalAssignment, evalNumericLiteral, } from "./eval/expressions.ts";
+import { evalIdentifier, evalBinaryExpr, evalAssignment, evalNumericLiteral,evalObjectExpr } from "./eval/expressions.ts";
 import { evalProgram, evalVarDeclaration } from "./eval/statements.ts"
 
 
@@ -17,6 +17,8 @@ export function evaluate(astNode: Statement, env: Environment): RuntimeVal {
             return { value: ((astNode as String).value), type: "string" } as StringVal
         case "Identifier":
             return evalIdentifier(astNode as Identifier, env)
+        case "ObjectLiteral":
+            return evalObjectExpr(astNode as ObjectLiteral, env)
         case "BinaryExpr":
             return evalBinaryExpr(astNode as BinaryExpr, env)
         case "Program":

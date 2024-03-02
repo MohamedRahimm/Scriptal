@@ -1,8 +1,11 @@
-import { Statement, Program, Expr, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Bool } from './ast.ts'
+import { ObjectLiteral } from './ast.ts';
+import { MemberExpr } from './ast.ts';
+import { CallExpr } from './ast.ts';
+import { Statement, Program, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Property } from './ast.ts'
 import { Token, TokenType, tokenize } from './lexer.ts'
 export class Parser {
     private tokens: Token[] = []
-    idx: number
+    idx!: number;
     private at() {
         return this.tokens[this.idx] as Token
     }
@@ -16,12 +19,13 @@ export class Parser {
     }
     private parseStatement(): Statement {
         switch (this.at().type) {
-            case TokenType.const:
+            case TokenType.Const:
             case TokenType.Int:
             case TokenType.Bool:
             case TokenType.Float:
             case TokenType.Any:
             case TokenType.Str:
+            case TokenType.Obj:
                 return this.parseVarDec()
             default:
                 return this.parseExpr()
@@ -30,11 +34,11 @@ export class Parser {
     }
     private parseVarDec(): Statement {
         let isConstant = false
-        if (this.at().type == TokenType.const) {
+        if (this.at().type == TokenType.Const) {
             isConstant = true
             this.eat()
         }
-        const validUserValTypes = new Set<TokenType>([TokenType.Any, TokenType.Bool, TokenType.Str, TokenType.Float, TokenType.Int])
+        const validUserValTypes = new Set<TokenType>([TokenType.Any, TokenType.Bool, TokenType.Str, TokenType.Float, TokenType.Int,TokenType.Obj])
         if (validUserValTypes.has(this.at().type) == false) throw `invalid var declaration type supported types are str etc...`
         const userValType = this.eat().value
         const identifier = this.expect(TokenType.Identifier, "Invalid var name").value
@@ -54,11 +58,11 @@ export class Parser {
         return declaration
 
     }
-    private parseExpr(): Expr {
+    private parseExpr(): Statement {
         return this.parseAssignmentExpr()
     }
-    private parseAssignmentExpr(): Expr {
-        const left = this.parseAdditiveExpr()
+    private parseAssignmentExpr(): Statement {
+        const left = this.parseLogicalExpr()
         if (this.at().type == TokenType.Equals) {
             this.eat()
             const value = this.parseAssignmentExpr()
@@ -66,7 +70,51 @@ export class Parser {
         }
         return left
     }
-    private parseAdditiveExpr(): Expr {
+    private parseLogicalExpr(): Statement{
+        let left = this.parseObjectExpr()
+        while (this.at().value === "||"||this.at().value === "&&") {
+            const operator = this.eat().value
+            const right = this.parseObjectExpr()
+            left = {
+                kind: "BinaryExpr",
+                left,
+                right,
+                operator
+            } as BinaryExpr
+        }
+        return left
+    }
+    private parseObjectExpr():Statement {
+      if(this.at().type!==TokenType.OpenBrace){
+        return this.parseAdditiveExpr()
+      }
+      this.eat()
+      const properties = new Array<Property>()
+      while(this.at().type!==TokenType.EOF && this.at().type!==TokenType.CloseBrace){
+        const key = this.expect(TokenType.Identifier, "Invalid key for object").value
+        // allows {key,...}
+        if(this.at().type==TokenType.Comma){
+            this.eat()
+            properties.push({key,kind:"Property"} as Property)
+            continue
+        }
+        //allows {key}
+        else if(this.at().type===TokenType.CloseBrace){
+            properties.push({key,kind:"Property"} as Property)
+            continue
+        }
+        this.expect(TokenType.Colon,"Expected Colon")
+        const value = this.parseExpr()
+        properties.push({kind:"Property",value,key} as Property)
+        if(this.at().type!==TokenType.CloseBrace){
+            this.expect(TokenType.Comma, "Expected comma or Closing Bracket following property")
+          }
+      }
+      
+      this.expect(TokenType.CloseBrace, "Unclosed Brackets")
+      return {kind: "ObjectLiteral",properties} as ObjectLiteral
+    }
+    private parseAdditiveExpr(): Statement {
         let left = this.parseMultiplicativeExpr()
         while (this.at().value === "+" || this.at().value === '-') {
             const operator = this.eat().value
@@ -80,7 +128,7 @@ export class Parser {
         }
         return left
     }
-    private parseMultiplicativeExpr(): Expr {
+    private parseMultiplicativeExpr(): Statement {
         let left = this.parseExponentExpr()
         while (this.at().value === "/" || this.at().value === '*' || this.at().value === "%" || this.at().value === "//") {
             const operator = this.eat().value
@@ -94,8 +142,8 @@ export class Parser {
         }
         return left
     }
-    private parseExponentExpr(): Expr {
-        let left = this.parsePrimaryExpr()
+    private parseExponentExpr(): Statement {
+        let left = this.parseCallMemberExpr()
         while (this.at().value === "**") {
             const operator = this.eat().value
             const right = this.parsePrimaryExpr()
@@ -108,7 +156,63 @@ export class Parser {
         }
         return left
     }
-    private parsePrimaryExpr(): Expr {
+    //foo.x()
+    private parseCallMemberExpr():Statement {
+      const member  = this.parseMemberExpr()
+      if(this.at().type==TokenType.OpenParen){
+        return this.parseCallExpr(member)
+      }
+      return member
+    }
+    private parseCallExpr(caller:Statement):Statement {
+      let callExpr:Statement = {
+        kind: "CallExpr",
+        caller,
+        args: this.parseArgs()
+      } as CallExpr
+      if(this.at().type == TokenType.OpenParen){
+        callExpr = this.parseCallExpr(callExpr)
+      }
+      return callExpr
+    }
+    private parseArgs():Statement[] {
+      this.expect(TokenType.OpenParen, "Expected open parenthesis")
+      const args = this.at().type == TokenType.CloseParen
+        ? []
+        : this.parseArgsList()
+        this.expect(TokenType.CloseParen,"Missing closing parenthesis inside argument list")
+        return args
+    }
+    private parseArgsList():Statement[] {
+      const args = [this.parseAssignmentExpr()]
+      while(this.at().type !== TokenType.EOF && this.at().type ===TokenType.Comma){
+        this.eat()
+        args.push(this.parseAssignmentExpr())
+      }
+      return args
+    }
+    private parseMemberExpr():Statement {
+      let object = this.parsePrimaryExpr()
+      while(this.at().type ===TokenType.Dot || this.at().type === TokenType.OpenBracket){
+        const operator = this.eat()
+        let property:Statement;
+        let computed:boolean;
+        if(operator.type==TokenType.Dot){
+            computed =false
+            property = this.parsePrimaryExpr()
+            if(property.kind!=="Identifier") throw `Cannot use dot op without rhs being an identifier`
+        }
+        else{
+            computed = true
+            property = this.parseExpr()
+            this.expect(TokenType.CloseBracket, "Missing closing bracket in computed value")
+        }
+        object = {kind: "MemberExpr", object,property,computed} as MemberExpr
+
+      }
+      return object
+    }
+    private parsePrimaryExpr(): Statement {
         const token = this.at()
         switch (token.type) {
             case TokenType.Identifier:
@@ -132,7 +236,7 @@ export class Parser {
                     kind: "Boolean",
                     value: this.eat().value === "true"
                 } as Boolean
-            case TokenType.QuotationMark:
+            case TokenType.QuotationMark:{
                 let value = ""
                 this.eat()
                 while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.QuotationMark) {
@@ -140,11 +244,13 @@ export class Parser {
                 }
                 this.expect(TokenType.QuotationMark, "Unclosed Quote")
                 return { kind: "String", value } as String
-            case TokenType.OpenParen:
+            }
+            case TokenType.OpenParen:{
                 this.eat()
-                const val = this.parseExpr()
+                const value = this.parseExpr()
                 this.expect(TokenType.CloseParen, "Unclosed Parenthesis")
-                return val
+                return value
+            }
             default:
                 console.log('Dont know this token', token)
                 throw Error()

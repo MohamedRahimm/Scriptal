@@ -1,0 +1,15 @@
+int x =100;
+bool y = true;
+float z = 1/2;
+float testVar123 = ((100*2)/3)**2 - 1//3;
+z+=x;
+const int foo = 100; 
+obj myobj = {
+    x: 100,
+    y:32,
+    foo,
+    complex:{
+        bar:true
+    }
+};
+myobj = {};
