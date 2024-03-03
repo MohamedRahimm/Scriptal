@@ -16,6 +16,9 @@ export type NodeType =
     | "CallExpr"
     | "Or"
     | "And"
+    | "FunctionDeclaration"
+    | "IfExpr"
+    | "ForExpr"
 
 
 export interface Statement {
@@ -32,6 +35,12 @@ export interface VarDeclaration extends Statement {
     valueType: string,
     value?: Statement,
     any: boolean
+}
+export interface FunctionDeclaration extends Statement {
+    kind: 'FunctionDeclaration'
+    parameters: string[]
+    name: string,
+    body: Statement[]
 }
 
 
@@ -58,6 +67,21 @@ export interface BinaryExpr extends Statement {
     left: Statement,
     right: Statement,
     operator: string
+}
+export interface IfExpr extends Statement {
+    kind: 'IfExpr'
+    body: Statement[]
+    condition: Statement
+    elseExpr?: Statement[]
+    
+}
+export interface ForExpr extends Statement {
+    kind: 'ForExpr'
+    body: Statement[]
+    initVar: VarDeclaration
+    iteration: AssignmentExpr
+    condition: Statement
+    
 }
 export interface Identifier extends Statement {
     kind: 'Identifier'

@@ -1,4 +1,7 @@
-export type ValueType = "null" | "boolean" | "string" | "int" | "float" | "any" | "object"
+import { Statement } from "../frontend/ast.ts";
+import Environment from "./environment.ts";
+
+export type ValueType = "null" | "boolean" | "string" | "int" | "float" | "any" | "object" | "native-fn" | "function"
 export interface RuntimeVal {
     type: ValueType
 }
@@ -32,5 +35,19 @@ export interface ObjectVal extends RuntimeVal {
     type: "object"
     properties: Map<string,RuntimeVal>
 }
-
+export interface FunctionVal extends RuntimeVal {
+    type: "function"
+    name:string,
+    parameters: string[],
+    declarationEnv: Environment;
+    body: Statement[]
+}
+export type FunctionCall = (args:RuntimeVal[],env:Environment) => RuntimeVal
+export interface NativeFnValue extends RuntimeVal {
+    type: "native-fn"
+    call: FunctionCall
+}
+export function makeNativeFn(call:FunctionCall){
+    return {type:"native-fn",call} as NativeFnValue
+}
 

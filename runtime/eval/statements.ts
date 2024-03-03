@@ -1,7 +1,8 @@
+import { FunctionDeclaration } from "../../frontend/ast.ts";
 import { Program, VarDeclaration } from "../../frontend/ast.ts"
 import Environment from "../environment.ts"
 import { evaluate } from "../interpreter.ts"
-import { NullVal, RuntimeVal } from "../values.ts"
+import { NullVal, RuntimeVal,FunctionVal } from "../values.ts"
 
 export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let lastEvaluated: RuntimeVal = { type: "null", value: null } as NullVal
@@ -34,4 +35,14 @@ export function evalVarDeclaration(declaration: VarDeclaration, env: Environment
     }
 
     return env.declareVar(declaration.identifier, value, declaration.constant, declaration.any)
+}
+export function evalFuncDeclaration(declaration: FunctionDeclaration, env: Environment): RuntimeVal {
+    const fn = {
+        type: "function",
+        name: declaration.name,
+        parameters: declaration.parameters,
+        declarationEnv:env,
+        body:declaration.body
+    } as FunctionVal
+    return env.declareVar(declaration.name,fn,false,true)
 }

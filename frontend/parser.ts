@@ -1,6 +1,6 @@
 import { ObjectLiteral } from './ast.ts';
 import { MemberExpr } from './ast.ts';
-import { CallExpr } from './ast.ts';
+import { CallExpr,FunctionDeclaration,IfExpr,ForExpr } from './ast.ts';
 import { Statement, Program, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Property } from './ast.ts'
 import { Token, TokenType, tokenize } from './lexer.ts'
 export class Parser {
@@ -27,10 +27,41 @@ export class Parser {
             case TokenType.Str:
             case TokenType.Obj:
                 return this.parseVarDec()
+            case TokenType.Function:
+                return this.parseFunctionDec()
+            case TokenType.If:
+                return this.parseIfExpr()
+            case TokenType.For:
+                return this.parseForExpr()
             default:
                 return this.parseExpr()
 
         }
+    }
+    private parseBlockStatement():Statement[]{
+        this.expect(TokenType.OpenBrace, "{ expected")
+        const body: Statement[] = []
+        while(this.at().type!==TokenType.EOF &&this.at().type!==TokenType.CloseBrace){
+            body.push(this.parseStatement())
+            this.expect(TokenType.Semicolon, "; Expected")
+           }
+        this.expect(TokenType.CloseBrace, "} expected")
+        return body
+    }
+    private parseFunctionDec():Statement{
+       this.eat()
+       const name = this.expect(TokenType.Identifier, "Expected Function name after Function keyword").value
+       const args = this.parseArgs() 
+       const params:string[] = []
+       for(const arg of args){
+        if(arg.kind !=="Identifier"){
+            throw`Inside function declaration expected parameters to be of type string instead got ${arg}`
+        }
+        params.push((arg as Identifier).symbol)
+       } 
+       const body = this.parseBlockStatement()
+       const fn =  {body,name,parameters:params,kind:"FunctionDeclaration"} as FunctionDeclaration
+       return fn
     }
     private parseVarDec(): Statement {
         let isConstant = false
@@ -58,6 +89,50 @@ export class Parser {
         return declaration
 
     }
+    private parseIfExpr():Statement{
+        this.eat()
+        this.expect(TokenType.OpenParen, "Expected ( after keyword if")
+        const condition = this.parseExpr()
+        this.expect(TokenType.CloseParen, "Expected )")
+        const body = this.parseBlockStatement()
+        if(this.tokens[this.idx+1].type===TokenType.Else){
+            this.expect(TokenType.Semicolon, "Expected ;")
+        }
+        let elseExpr:Statement[] = []
+        if(this.at().type==TokenType.Else){
+            this.eat()
+            if(this.at().type==TokenType.If){
+                elseExpr = [this.parseIfExpr()]
+            }
+            else elseExpr = this.parseBlockStatement()
+        }
+        return{
+            kind: "IfExpr",
+            body,
+            condition,
+            elseExpr
+        } as IfExpr
+
+    }
+    private parseForExpr():Statement{
+        // consider for(;;)
+        this.eat()
+        this.expect(TokenType.OpenParen, "Expected (")
+        const initVar = this.parseStatement()
+        this.expect(TokenType.Semicolon, "Expected ;")
+        const condition = this.parseExpr()
+        this.expect(TokenType.Semicolon, "Expected ;")
+        const iteration = this.parseExpr()
+        this.expect(TokenType.CloseParen, "Expected )")
+        const body = this.parseBlockStatement()
+        return {
+            kind: "ForExpr",
+            initVar,
+            condition,
+            iteration,
+            body
+        } as ForExpr
+    }
     private parseExpr(): Statement {
         return this.parseAssignmentExpr()
     }
@@ -71,14 +146,41 @@ export class Parser {
         return left
     }
     private parseLogicalExpr(): Statement{
-        let left = this.parseObjectExpr()
+        let left = this.parseRelationalExpr()
         while (this.at().value === "||"||this.at().value === "&&") {
             const operator = this.eat().value
-            const right = this.parseObjectExpr()
+            const right = this.parseRelationalExpr()
             left = {
                 kind: "BinaryExpr",
                 left,
                 right,
+                operator
+            } as BinaryExpr
+        }
+        return left
+    }
+    private parseRelationalExpr():Statement{
+        const left = this.parseEqualityExpr()
+        const RelationalOps = new Set(["<",">","<=",">="])
+        if(RelationalOps.has(this.at().value)){
+            const operator = this.eat().value
+            return{
+                kind:"BinaryExpr",
+                left,
+                right: this.parseEqualityExpr(),
+                operator
+            } as BinaryExpr
+        }
+        return left
+    }
+    private parseEqualityExpr():Statement{
+        const left = this.parseObjectExpr()
+        if(this.at().value==="=="||this.at().value=="!="){
+            const operator = this.eat().value
+            return{
+                kind:"BinaryExpr",
+                left,
+                right: this.parseObjectExpr(),
                 operator
             } as BinaryExpr
         }
@@ -156,7 +258,6 @@ export class Parser {
         }
         return left
     }
-    //foo.x()
     private parseCallMemberExpr():Statement {
       const member  = this.parseMemberExpr()
       if(this.at().type==TokenType.OpenParen){
@@ -252,8 +353,8 @@ export class Parser {
                 return value
             }
             default:
-                console.log('Dont know this token', token)
-                throw Error()
+                console.log(token)
+                throw `Token not recognized`
         }
     }
     produceAst(sourceCode: string): Program {

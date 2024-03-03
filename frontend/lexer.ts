@@ -32,12 +32,21 @@ export enum TokenType {
     Int,
     Float,
     Obj,
+    Function,
+
+    //Conditionals/Loops
+    If,
+    ElseIf,
+    Else,
+    While,
+    For,
 
     //Miscellaneous
     Colon,
     OpenBrace,
     CloseBrace,
     QuotationMark,
+    Comment,
 
     // End of file/statement
     Semicolon,
@@ -59,6 +68,7 @@ const TOKENMAP: Record<string, TokenType> = {
     ';': TokenType.Semicolon,
     '+': TokenType.BinaryOperator,
     '-': TokenType.BinaryOperator,
+    '`': TokenType.Comment,
     '<' : TokenType.LessThan,
     '>': TokenType.GreaterThan,
     '<=': TokenType.LessOrEqual,
@@ -93,6 +103,12 @@ const KEYWORDS: Record<string, TokenType> = {
     "any": TokenType.Any,
     "str": TokenType.Str,
     "obj":TokenType.Obj,
+    "function":TokenType.Function,
+    "if":TokenType.If,
+    "elif":TokenType.ElseIf,
+    "else":TokenType.Else,
+    "for":TokenType.For,
+    "while":TokenType.While,
 }
 
 export interface Token {
@@ -121,17 +137,21 @@ export function tokenize(src: string): Token[] {
     const tokens = new Array<Token>();
     for (let i = 0; i < src.length; i++) {
         //ADD CHAR LOCATION TO TOKENS
-        //Single character tokens
+
         const oneCharTokens = src[i]
         const twoCharTokens = src[i] + src[i+1]
         const threeCharTokens = src[i] + src[i+1] + src[i+2]
         if (isSkippible(src[i])) continue
 
-        //Multi char tokens
         else if (isInt(src[i])) {
             let num = "";
+            let hasDecimal = false;
             for (let j = i; j < src.length; j++) {
-                if (isInt(src[j]) === false) break
+                if (isInt(src[j]) === false){
+                    if(src[j]==="."&&hasDecimal===true) break
+                    else if(src[j]===".") hasDecimal =true
+                    else break
+                }
                 num += src[j]
             }
             i += num.length - 1
@@ -146,6 +166,10 @@ export function tokenize(src: string): Token[] {
             i += ident.length - 1
             const reserved = KEYWORDS[ident];
             if (reserved != undefined) {
+                // if(reserved == TokenType.ElseIf){
+                //     tokens.push()
+                // }
+                //else 
                 tokens.push(makeToken(ident, reserved));
             } else {
                 // Unreconized name must mean user defined symbol.
@@ -175,7 +199,12 @@ export function tokenize(src: string): Token[] {
         }
         
         else if(TOKENMAP[oneCharTokens]){
-            tokens.push(makeToken(oneCharTokens, TOKENMAP[oneCharTokens]))
+            if(TOKENMAP[oneCharTokens]===TokenType.Comment){
+                i++
+                while(TOKENMAP[src[i]]!==TokenType.Comment && i<src.length) i++
+                if(TOKENMAP[src[i]]!==TokenType.Comment) throw `Missing End of Comment`
+            }
+            else tokens.push(makeToken(oneCharTokens, TOKENMAP[oneCharTokens]))
         }
 
         else {
@@ -186,5 +215,4 @@ export function tokenize(src: string): Token[] {
     return tokens
 }
 
-
-
+// console.log(tokenize("if(1==2){int x = 100;};else{ bool y =true;};"))
