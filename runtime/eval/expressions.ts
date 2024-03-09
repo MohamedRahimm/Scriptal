@@ -1,9 +1,12 @@
-import { CallExpr, ForExpr } from "../../frontend/ast.ts";
-import { AssignmentExpr, BinaryExpr, Identifier, NumericLiteral,ObjectLiteral,IfExpr } from "../../frontend/ast.ts"
+import { CallExpr, ForExpr, MemberExpr } from "../../frontend/ast.ts";
+import { ArrayLiteral } from "../../frontend/ast.ts";
+import { WhileExpr } from "../../frontend/ast.ts";
+import { AssignmentExpr, BinaryExpr, Identifier, NumericLiteral,ObjectLiteral,IfExpr,ReturnStatement } from "../../frontend/ast.ts"
 import Environment from "../environment.ts"
 import { evaluate } from "../interpreter.ts"
+import { ArrayVal, BreakVal, ContinueVal } from "../values.ts";
 import { AnyVal, FunctionVal, ObjectVal } from "../values.ts";
-import { FloatVal, IntVal, NullVal, RuntimeVal,BoolVal,NativeFnValue } from "../values.ts"
+import { FloatVal, IntVal, NullVal, RuntimeVal,BoolVal,NativeFnValue,ReturnVal } from "../values.ts"
 import { evalVarDeclaration } from "./statements.ts";
 
 function evalNumBinaryExpr(lhs: IntVal, rhs: IntVal, op: string): RuntimeVal{
@@ -73,7 +76,7 @@ export function evalBinaryExpr(binop: BinaryExpr, env: Environment): RuntimeVal 
         return evalBoolBinaryExpr(lhs as RuntimeVal, rhs as RuntimeVal, op)
     }
     if ((lhs.type === "float" || lhs.type === "int") && (rhs.type === "float" || rhs.type === "int")) return evalNumBinaryExpr(lhs as IntVal, rhs as IntVal, op) 
-    return { type: "null", value: null } as NullVal
+    throw `Invalid Binary Expression cannot use the ${op} operator on ${lhs.type} and ${rhs.type}`
 }
 
 export function evalIdentifier(ident: Identifier, env: Environment): RuntimeVal {
@@ -82,6 +85,7 @@ export function evalIdentifier(ident: Identifier, env: Environment): RuntimeVal 
 }
 
 export function evalAssignment(node: AssignmentExpr, env: Environment): RuntimeVal {
+    //add support for objects
     if (node.assignee.kind !== "Identifier") throw `Invalid LHS assignment expr ${node.assignee}`
     const varName = (node.assignee as Identifier).symbol
     return env.assignVar(varName, evaluate(node.value, env))
@@ -100,6 +104,13 @@ export function evalObjectExpr(obj:ObjectLiteral,env:Environment): RuntimeVal{
     }
     return object
 }
+export function evalArrayExpr(arr:ArrayLiteral,env:Environment): RuntimeVal{
+    const array = {type:"array",elements:[]} as ArrayVal
+    for(const element of arr.value){
+        array.elements.push(evaluate(element,env))
+    }
+    return array
+}
 export function evalCallExpr(expr:CallExpr,env:Environment): RuntimeVal{
     const args = expr.args.map((arg)=>evaluate(arg,env))
     const fn = evaluate(expr.caller,env)
@@ -117,12 +128,39 @@ export function evalCallExpr(expr:CallExpr,env:Environment): RuntimeVal{
         }
         let result:RuntimeVal = {type:"null",value:null} as NullVal
         for(const stmt of func.body){
-            result = evaluate(stmt,scope)
+             result = evaluate(stmt,scope)
+             if(result.type==="return") return result
         }
         return result
     }
     
     throw `Cannot call a value that is not a function ${JSON.stringify(fn)}`
+}
+export function evalMemberExpr(expr: MemberExpr, env: Environment): RuntimeVal{
+    
+        if (expr.computed) {
+            let obj = evaluate(expr.object, env) as ObjectVal;
+            let ident = (evaluate(expr.property, env) as AnyVal).value;
+            if(ident==undefined) throw `idk man`
+            if (obj.type != "object") {
+                throw `Expected type object found type ${obj.type} instead.`;
+            }
+            if (obj.properties.has(ident)) {
+                return obj.properties.get(ident) as RuntimeVal;
+            }
+        } else {
+            let obj = evaluate(expr.object, env) as ObjectVal;
+            let ident = (expr.property as Identifier).symbol;
+            if (obj.type != "object") {
+                throw `Expected type object found type ${obj.type} instead.`;
+            }
+            if (obj.properties.has(ident)) {
+                return obj.properties.get(ident) as RuntimeVal;
+            }
+        }
+    
+        throw `non existant prop`
+
 }
 
 export function evalIfExpr(expr:IfExpr, env:Environment):RuntimeVal{
@@ -133,11 +171,25 @@ export function evalIfExpr(expr:IfExpr, env:Environment):RuntimeVal{
     if(condition.value===true){
         for(const stmt of expr.body){
             result = evaluate(stmt,scope)
+            if(result.type==="return") return (result as ReturnVal).value
+            if(result.type==="break") {
+                break
+            }
+            else if(result.type==="continue") {
+                break
+            }
         }
     }
     else if (expr.elseExpr!=undefined){
         for(const stmt of expr.elseExpr){
             result = evaluate(stmt,scope)
+            if(result.type==="return") return (result as ReturnVal).value
+            if(result.type==="break") {
+                break
+            }
+            else if(result.type==="continue") {
+                break
+            }
         }
     }
     return result
@@ -149,11 +201,51 @@ export function evalForExpr(declaration:ForExpr, env:Environment):RuntimeVal{
     const iteration = declaration.iteration
     let condition = evaluate(declaration.condition,scope)
     while((condition as BoolVal).value===true){
-        evalAssignment(iteration,scope)
+        let shouldBreak = false
         for(const stmt of body){
-            evaluate(stmt,scope)
+            const lastEvaled = evaluate(stmt,scope)
+            if(lastEvaled.type==="break") {
+                shouldBreak = true
+                break
+            }
+            else if(lastEvaled.type==="continue") {
+                break
+            }
+            if(lastEvaled.type==="return") return (lastEvaled as ReturnVal).value
         }
+        if(shouldBreak===true) break
+        evalAssignment(iteration,scope)
         condition = evaluate(declaration.condition,scope)
     } 
     return {type:"null",value:null} as NullVal
+}
+export function evalWhileExpr(declaration:WhileExpr, env:Environment):RuntimeVal{
+    const scope = new Environment(env)
+    const body = declaration.body
+    let condition = evaluate(declaration.condition,scope)
+    while((condition as BoolVal).value===true){
+        let shouldBreak = false
+        let shouldContinue = false
+        for(const stmt of body){
+            const lastEvaled = evaluate(stmt,scope)
+            if(lastEvaled.type==="break") {
+                shouldBreak = true
+                break
+            }
+            if(lastEvaled.type==="continue") {
+                shouldContinue = true
+                break
+            }
+            if(lastEvaled.type==="return") return (lastEvaled as ReturnVal).value
+        }
+        if(shouldBreak===true) break
+        if(shouldContinue===true) continue
+        condition = evaluate(declaration.condition,scope)
+    } 
+    return {type:"null",value:null} as NullVal
+}
+
+export function evalReturnStatement(declaration:ReturnStatement, env:Environment):RuntimeVal{
+    const value = evaluate(declaration.value,env)
+    return {type:"return",value} as ReturnVal
 }

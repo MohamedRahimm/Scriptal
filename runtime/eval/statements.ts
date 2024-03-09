@@ -2,7 +2,8 @@ import { FunctionDeclaration } from "../../frontend/ast.ts";
 import { Program, VarDeclaration } from "../../frontend/ast.ts"
 import Environment from "../environment.ts"
 import { evaluate } from "../interpreter.ts"
-import { NullVal, RuntimeVal,FunctionVal } from "../values.ts"
+import { UnassignedVal } from "../values.ts";
+import { NullVal, RuntimeVal,FunctionVal,ReturnVal } from "../values.ts"
 
 export function evalProgram(program: Program, env: Environment): RuntimeVal {
     let lastEvaluated: RuntimeVal = { type: "null", value: null } as NullVal
@@ -13,9 +14,10 @@ export function evalProgram(program: Program, env: Environment): RuntimeVal {
 }
 
 export function evalVarDeclaration(declaration: VarDeclaration, env: Environment): RuntimeVal {
-    const value = declaration.value ? evaluate(declaration.value, env) : { type: "null", value: null } as NullVal
+    const value = declaration.value ? evaluate(declaration.value, env) : { type: "unassigned", value: "unassigned" } as UnassignedVal
     const valueType = declaration.valueType
     const errorMsg = `Invalid assignment of type ${valueType} to type ${value.type}`
+    if(value.type==="unassigned") return env.declareVar(declaration.identifier, value, declaration.constant, declaration.any)
     switch (valueType) {
         case ("bool"):
             if (value.type !== "boolean") throw errorMsg
@@ -44,5 +46,5 @@ export function evalFuncDeclaration(declaration: FunctionDeclaration, env: Envir
         declarationEnv:env,
         body:declaration.body
     } as FunctionVal
-    return env.declareVar(declaration.name,fn,false,true)
+    return env.declareVar(declaration.name,fn,false)
 }

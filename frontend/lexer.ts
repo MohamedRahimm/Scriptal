@@ -33,6 +33,7 @@ export enum TokenType {
     Float,
     Obj,
     Function,
+    Unassigned,
 
     //Conditionals/Loops
     If,
@@ -47,6 +48,9 @@ export enum TokenType {
     CloseBrace,
     QuotationMark,
     Comment,
+    Return,
+    Continue,
+    Break,
 
     // End of file/statement
     Semicolon,
@@ -102,6 +106,7 @@ const KEYWORDS: Record<string, TokenType> = {
     "float": TokenType.Float,
     "any": TokenType.Any,
     "str": TokenType.Str,
+    "unassigned":TokenType.Unassigned,
     "obj":TokenType.Obj,
     "function":TokenType.Function,
     "if":TokenType.If,
@@ -109,6 +114,9 @@ const KEYWORDS: Record<string, TokenType> = {
     "else":TokenType.Else,
     "for":TokenType.For,
     "while":TokenType.While,
+    "return":TokenType.Return,
+    "continue":TokenType.Continue,
+    "break":TokenType.Break
 }
 
 export interface Token {
@@ -166,10 +174,6 @@ export function tokenize(src: string): Token[] {
             i += ident.length - 1
             const reserved = KEYWORDS[ident];
             if (reserved != undefined) {
-                // if(reserved == TokenType.ElseIf){
-                //     tokens.push()
-                // }
-                //else 
                 tokens.push(makeToken(ident, reserved));
             } else {
                 // Unreconized name must mean user defined symbol.

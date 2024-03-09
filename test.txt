@@ -4,15 +4,8 @@ float z = 1/2;
 float testVar123 = ((100*2)/3)**2 - 1//3;
 z+=x;
 const int foo = 100; 
-obj myobj = {
-    x: 100,
-    y:32,
-    foo,
-    complex:{
-        bar:true
-    }
-};
-myobj = {};`
+
+myobj = {};
 int x = 100;
 int y = 100;
 int z =100;
@@ -27,9 +20,87 @@ if(x==y){
         };
     };
 };
-for(int i = 0;i<=10;i+=1){
-    print(i);
+for(int i = 0;i<=2;i+=1){
+    print(j);
+    for(int j = 0;j<=2;j+=1){
+    };
 };
+int x = 1;
+while(x<=3){
+    for(int y = 1;y<=3;y+=1){
+        print("THIS IS Y",y);
+    };
+    print("THIS IS X",x);
+    x+=1;
+};
+print("ehfjefoef", x,y);
+const int x =100;
+if(true){
+    const int x = 200;
+    print(x);
+};
+obj test = {hello:1};
+test.hello.hi.idk;
+obj myobj = {
+    x: 100,
+    y:32,
+    complex:{
+        bar:true,
+        test:{
+            jfkej: false
+        }
+    }
+};
+myobj["complex"]["test"]["ejf"];
+myobj["complex"];
+int x = 1;
+while(x<5){
+    if(x==1){
+        print("x is 1");
+        x+=1;
+        continue;
+    };
+    if(x==2){
+        print("x is 2");
+        x+=1;
+        continue;
+    };
+    print("x is",x);
+    x+=1;
+    
+};
+int i = 0;
+for(int i = 0;i<=10;i+=1){
+    i+=1;
+    if(true){
+        break;
+    };
+};
+`
+obj myobj = {
+    x: 100,
+    y:32,
+    complex:{
+        bar:true,
+        test:{
+            jfkej: false
+        }
+    }
+};
+`myobj.complex.test.jfkej;`
+int x = 1;
+while(x<5){
+    for(int i = 1;i<=3;i+=1){
+        if(i%2==0){
+            continue;
+        };
+        print("JAJOIFEJFOA");
+    };
+    print("x is",x);
+    x+=1;
+    
+};
+
 
 
 

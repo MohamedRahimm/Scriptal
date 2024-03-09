@@ -1,5 +1,7 @@
-import { ObjectLiteral } from './ast.ts';
+import { Any, ArrayLiteral, ObjectLiteral, Unassigned, WhileExpr } from './ast.ts';
 import { MemberExpr } from './ast.ts';
+import { ReturnStatement,ContinueStatement,BreakStatement } from './ast.ts';
+
 import { CallExpr,FunctionDeclaration,IfExpr,ForExpr } from './ast.ts';
 import { Statement, Program, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Property } from './ast.ts'
 import { Token, TokenType, tokenize } from './lexer.ts'
@@ -17,7 +19,7 @@ export class Parser {
         if (prev.type !== expectedVal) throw `expected ${expectedVal} got ${prev.type} at char ${prev.value} ERROR MSG ${errorMsg}`
         return prev as Token
     }
-    private parseStatement(): Statement {
+    private parseStatement(inFunction=false,inLoop=false): Statement {
         switch (this.at().type) {
             case TokenType.Const:
             case TokenType.Int:
@@ -26,29 +28,31 @@ export class Parser {
             case TokenType.Any:
             case TokenType.Str:
             case TokenType.Obj:
-                return this.parseVarDec()
+                return this.parseVarDec(inFunction,inLoop)
             case TokenType.Function:
-                return this.parseFunctionDec()
+                return this.parseFunctionDec(inFunction,inLoop)
             case TokenType.If:
-                return this.parseIfExpr()
+                return this.parseIfExpr(inFunction,inLoop)
             case TokenType.For:
-                return this.parseForExpr()
+                return this.parseForExpr(inFunction,inLoop)
+            case TokenType.While:
+                return this.parseWhileExpr(inFunction,inLoop)
             default:
-                return this.parseExpr()
+                return this.parseExpr(inFunction,inLoop)
 
         }
     }
-    private parseBlockStatement():Statement[]{
+    private parseBlockStatement(inFunction=false,inLoop=false):Statement[]{
         this.expect(TokenType.OpenBrace, "{ expected")
         const body: Statement[] = []
         while(this.at().type!==TokenType.EOF &&this.at().type!==TokenType.CloseBrace){
-            body.push(this.parseStatement())
+            body.push(this.parseStatement(inFunction,inLoop))
             this.expect(TokenType.Semicolon, "; Expected")
            }
         this.expect(TokenType.CloseBrace, "} expected")
         return body
     }
-    private parseFunctionDec():Statement{
+    private parseFunctionDec(inFunction=false,inLoop=false):Statement{
        this.eat()
        const name = this.expect(TokenType.Identifier, "Expected Function name after Function keyword").value
        const args = this.parseArgs() 
@@ -59,11 +63,11 @@ export class Parser {
         }
         params.push((arg as Identifier).symbol)
        } 
-       const body = this.parseBlockStatement()
+        const body = this.parseBlockStatement(true,inLoop)
        const fn =  {body,name,parameters:params,kind:"FunctionDeclaration"} as FunctionDeclaration
        return fn
     }
-    private parseVarDec(): Statement {
+    private parseVarDec(inFunction=false,inLoop=false): Statement {
         let isConstant = false
         if (this.at().type == TokenType.Const) {
             isConstant = true
@@ -73,13 +77,24 @@ export class Parser {
         if (validUserValTypes.has(this.at().type) == false) throw `invalid var declaration type supported types are str etc...`
         const userValType = this.eat().value
         const identifier = this.expect(TokenType.Identifier, "Invalid var name").value
+        if(this.at().type===TokenType.Semicolon){
+            if(isConstant===true) throw `Must initate const vars`
+            return{
+                kind: "VarDeclaration",
+                value: undefined,
+                constant: isConstant,
+                identifier,
+                valueType: userValType,
+                any: userValType === "any"
+            } as VarDeclaration
+        }
         this.expect(
             TokenType.Equals,
             "Expected equals token following identifier in var declaration.",
         );
         const declaration = {
             kind: "VarDeclaration",
-            value: this.parseExpr(),
+            value: this.parseExpr(inFunction,inLoop),
             constant: isConstant,
             identifier,
             valueType: userValType,
@@ -89,12 +104,12 @@ export class Parser {
         return declaration
 
     }
-    private parseIfExpr():Statement{
+    private parseIfExpr(inFunction=false,inLoop=false):Statement{
         this.eat()
         this.expect(TokenType.OpenParen, "Expected ( after keyword if")
-        const condition = this.parseExpr()
+        const condition = this.parseExpr(inFunction,inLoop)
         this.expect(TokenType.CloseParen, "Expected )")
-        const body = this.parseBlockStatement()
+        const body = this.parseBlockStatement(inFunction,inLoop)
         if(this.tokens[this.idx+1].type===TokenType.Else){
             this.expect(TokenType.Semicolon, "Expected ;")
         }
@@ -102,9 +117,9 @@ export class Parser {
         if(this.at().type==TokenType.Else){
             this.eat()
             if(this.at().type==TokenType.If){
-                elseExpr = [this.parseIfExpr()]
+                elseExpr = [this.parseIfExpr(inFunction,inLoop)]
             }
-            else elseExpr = this.parseBlockStatement()
+            else elseExpr = this.parseBlockStatement(inFunction,inLoop)
         }
         return{
             kind: "IfExpr",
@@ -114,17 +129,17 @@ export class Parser {
         } as IfExpr
 
     }
-    private parseForExpr():Statement{
+    private parseForExpr(inFunction=false,inLoop=false):Statement{
         // consider for(;;)
         this.eat()
         this.expect(TokenType.OpenParen, "Expected (")
-        const initVar = this.parseStatement()
+        const initVar = this.parseVarDec(inFunction)
         this.expect(TokenType.Semicolon, "Expected ;")
-        const condition = this.parseExpr()
+        const condition = this.parseExpr(inFunction)
         this.expect(TokenType.Semicolon, "Expected ;")
-        const iteration = this.parseExpr()
+        const iteration = this.parseExpr(inFunction)
         this.expect(TokenType.CloseParen, "Expected )")
-        const body = this.parseBlockStatement()
+        const body = this.parseBlockStatement(inFunction,true)
         return {
             kind: "ForExpr",
             initVar,
@@ -133,23 +148,35 @@ export class Parser {
             body
         } as ForExpr
     }
-    private parseExpr(): Statement {
-        return this.parseAssignmentExpr()
+    private parseWhileExpr(inFunction=false,inLoop=false):Statement{
+        this.eat()
+        this.expect(TokenType.OpenParen, "Expected (")
+        const condition = this.parseExpr(inFunction)
+        this.expect(TokenType.CloseParen, "Expected )")
+        const body = this.parseBlockStatement(inFunction,true)
+        return {
+            kind: "WhileExpr",
+            body,
+            condition
+        } as WhileExpr
     }
-    private parseAssignmentExpr(): Statement {
-        const left = this.parseLogicalExpr()
+    private parseExpr(inFunction=false,inLoop=false): Statement {
+        return this.parseAssignmentExpr(inFunction,inLoop)
+    }
+    private parseAssignmentExpr(inFunction=false,inLoop=false): Statement {
+        const left = this.parseLogicalExpr(inFunction,inLoop)
         if (this.at().type == TokenType.Equals) {
             this.eat()
-            const value = this.parseAssignmentExpr()
+            const value = this.parseAssignmentExpr(inFunction,inLoop)
             return { value, assignee: left, kind: "AssignmentExpr" } as AssignmentExpr
         }
         return left
     }
-    private parseLogicalExpr(): Statement{
-        let left = this.parseRelationalExpr()
+    private parseLogicalExpr(inFunction=false,inLoop=false): Statement{
+        let left = this.parseRelationalExpr(inFunction,inLoop)
         while (this.at().value === "||"||this.at().value === "&&") {
             const operator = this.eat().value
-            const right = this.parseRelationalExpr()
+            const right = this.parseRelationalExpr(inFunction,inLoop)
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -159,36 +186,38 @@ export class Parser {
         }
         return left
     }
-    private parseRelationalExpr():Statement{
-        const left = this.parseEqualityExpr()
+    private parseRelationalExpr(inFunction=false,inLoop=false):Statement{
+        const left = this.parseEqualityExpr(inFunction,inLoop)
         const RelationalOps = new Set(["<",">","<=",">="])
         if(RelationalOps.has(this.at().value)){
             const operator = this.eat().value
+            const right = this.parseEqualityExpr(inFunction,inLoop)
             return{
                 kind:"BinaryExpr",
                 left,
-                right: this.parseEqualityExpr(),
+                right,
                 operator
             } as BinaryExpr
         }
         return left
     }
-    private parseEqualityExpr():Statement{
-        const left = this.parseObjectExpr()
+    private parseEqualityExpr(inFunction=false,inLoop=false):Statement{
+        const left = this.parseObjectExpr(inFunction,inLoop)
         if(this.at().value==="=="||this.at().value=="!="){
             const operator = this.eat().value
+            const right = this.parseObjectExpr(inFunction,inLoop)
             return{
                 kind:"BinaryExpr",
                 left,
-                right: this.parseObjectExpr(),
+                right,
                 operator
             } as BinaryExpr
         }
         return left
     }
-    private parseObjectExpr():Statement {
+    private parseObjectExpr(inFunction=false,inLoop=false):Statement {
       if(this.at().type!==TokenType.OpenBrace){
-        return this.parseAdditiveExpr()
+        return this.parseAdditiveExpr(inFunction,inLoop)
       }
       this.eat()
       const properties = new Array<Property>()
@@ -206,7 +235,7 @@ export class Parser {
             continue
         }
         this.expect(TokenType.Colon,"Expected Colon")
-        const value = this.parseExpr()
+        const value = this.parseExpr(inFunction,inLoop)
         properties.push({kind:"Property",value,key} as Property)
         if(this.at().type!==TokenType.CloseBrace){
             this.expect(TokenType.Comma, "Expected comma or Closing Bracket following property")
@@ -216,11 +245,11 @@ export class Parser {
       this.expect(TokenType.CloseBrace, "Unclosed Brackets")
       return {kind: "ObjectLiteral",properties} as ObjectLiteral
     }
-    private parseAdditiveExpr(): Statement {
-        let left = this.parseMultiplicativeExpr()
+    private parseAdditiveExpr(inFunction=false,inLoop=false): Statement {
+        let left = this.parseMultiplicativeExpr(inFunction,inLoop)
         while (this.at().value === "+" || this.at().value === '-') {
             const operator = this.eat().value
-            const right = this.parseMultiplicativeExpr()
+            const right = this.parseMultiplicativeExpr(inFunction,inLoop)
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -230,11 +259,11 @@ export class Parser {
         }
         return left
     }
-    private parseMultiplicativeExpr(): Statement {
-        let left = this.parseExponentExpr()
+    private parseMultiplicativeExpr(inFunction=false,inLoop=false): Statement {
+        let left = this.parseExponentExpr(inFunction,inLoop)
         while (this.at().value === "/" || this.at().value === '*' || this.at().value === "%" || this.at().value === "//") {
             const operator = this.eat().value
-            const right = this.parseExponentExpr()
+            const right = this.parseExponentExpr(inFunction,inLoop)
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -244,11 +273,11 @@ export class Parser {
         }
         return left
     }
-    private parseExponentExpr(): Statement {
-        let left = this.parseCallMemberExpr()
+    private parseExponentExpr(inFunction=false,inLoop=false): Statement {
+        let left = this.parseCallMemberExpr(inFunction,inLoop)
         while (this.at().value === "**") {
             const operator = this.eat().value
-            const right = this.parsePrimaryExpr()
+            const right = this.parseCallMemberExpr(inFunction,inLoop)
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -258,8 +287,8 @@ export class Parser {
         }
         return left
     }
-    private parseCallMemberExpr():Statement {
-      const member  = this.parseMemberExpr()
+    private parseCallMemberExpr(inFunction=false,inLoop=false):Statement {
+      const member  = this.parseMemberExpr(inFunction,inLoop)
       if(this.at().type==TokenType.OpenParen){
         return this.parseCallExpr(member)
       }
@@ -292,20 +321,20 @@ export class Parser {
       }
       return args
     }
-    private parseMemberExpr():Statement {
-      let object = this.parsePrimaryExpr()
+    private parseMemberExpr(inFunction=false,inLoop=false):Statement {
+      let object = this.parsePrimaryExpr(inFunction,inLoop)
       while(this.at().type ===TokenType.Dot || this.at().type === TokenType.OpenBracket){
         const operator = this.eat()
         let property:Statement;
         let computed:boolean;
         if(operator.type==TokenType.Dot){
             computed =false
-            property = this.parsePrimaryExpr()
+            property = this.parsePrimaryExpr(inFunction,inLoop)
             if(property.kind!=="Identifier") throw `Cannot use dot op without rhs being an identifier`
         }
         else{
             computed = true
-            property = this.parseExpr()
+            property = this.parseExpr(inFunction,inLoop)
             this.expect(TokenType.CloseBracket, "Missing closing bracket in computed value")
         }
         object = {kind: "MemberExpr", object,property,computed} as MemberExpr
@@ -313,9 +342,28 @@ export class Parser {
       }
       return object
     }
-    private parsePrimaryExpr(): Statement {
+    private parsePrimaryExpr(inFunction=false,inLoop=false): Statement {
         const token = this.at()
         switch (token.type) {
+            case TokenType.Break:
+                this.eat()
+                if(inLoop===false) throw `Not in loop`
+                return{
+                    kind: "BreakStatement",
+                } as BreakStatement
+            case TokenType.Continue:
+                this.eat()
+                if(inLoop===false) throw `Not in loop`
+                return{
+                    kind: "ContinueStatement",
+                } as ContinueStatement
+            case TokenType.Return:
+                this.eat()
+                if(inFunction===false) throw `Not in function`
+                return{
+                    kind: "ReturnStatement",
+                    value: this.parseExpr()
+                } as ReturnStatement
             case TokenType.Identifier:
                 return {
                     kind: "Identifier",
@@ -337,6 +385,11 @@ export class Parser {
                     kind: "Boolean",
                     value: this.eat().value === "true"
                 } as Boolean
+            case TokenType.Unassigned:
+                return {
+                    kind: "Unassigned",
+                    value: this.eat().value
+                } as Unassigned
             case TokenType.QuotationMark:{
                 let value = ""
                 this.eat()
@@ -348,9 +401,23 @@ export class Parser {
             }
             case TokenType.OpenParen:{
                 this.eat()
-                const value = this.parseExpr()
+                const value = this.parseExpr(inFunction)
                 this.expect(TokenType.CloseParen, "Unclosed Parenthesis")
                 return value
+            }
+            case TokenType.OpenBracket:{
+                const props = []
+                this.eat()
+                while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CloseBracket) {
+                    if(this.at().type==TokenType.Comma){
+                        this.eat()
+                        props.push(this.parseExpr(inFunction))
+                        continue
+                    }
+                    props.push(this.parseExpr(inFunction))
+                }
+                this.expect(TokenType.CloseBracket, "Expected closing bracked")
+                return {kind:"ArrayLiteral",value:props} as ArrayLiteral
             }
             default:
                 console.log(token)

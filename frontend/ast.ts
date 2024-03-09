@@ -19,6 +19,12 @@ export type NodeType =
     | "FunctionDeclaration"
     | "IfExpr"
     | "ForExpr"
+    | "WhileExpr"
+    | "Unassigned"
+    | "BreakStatement"
+    | "ContinueStatement"
+    |"ReturnStatement"
+    | "ArrayLiteral"
 
 
 export interface Statement {
@@ -83,6 +89,11 @@ export interface ForExpr extends Statement {
     condition: Statement
     
 }
+export interface WhileExpr extends Statement {
+    kind: 'WhileExpr'
+    body: Statement[]
+    condition: Statement
+}
 export interface Identifier extends Statement {
     kind: 'Identifier'
     symbol: string
@@ -98,6 +109,10 @@ export interface Null extends Statement {
 export interface Boolean extends Statement {
     kind: "Boolean"
     value: boolean
+}
+export interface Unassigned extends Statement {
+    kind: "Unassigned"
+    value: "unassigned"
 }
 export interface Bool extends Statement {
     kind: "Bool"
@@ -122,4 +137,18 @@ export interface Property extends Statement {
 export interface ObjectLiteral extends Statement {
     kind: "ObjectLiteral",
     properties: Property[]
+}
+export interface BreakStatement extends Statement{
+    kind: "BreakStatement"
+}
+export interface ContinueStatement extends Statement{
+    kind: "ContinueStatement"
+}
+export interface ReturnStatement extends Statement{
+    kind: "ReturnStatement"
+    value: Statement
+}
+export interface ArrayLiteral extends Statement{
+    kind: "ArrayLiteral",
+    value: Statement[]
 }
