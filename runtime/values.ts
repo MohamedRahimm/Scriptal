@@ -1,13 +1,23 @@
 import { Statement } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
 
-export type ValueType = "null" | "boolean" | "string" | "int" | "float" | "any" | "unassigned" | "object" | "native-fn" | "function"|"break"|"continue"|"return"|"array"
+export type ValueType = "null" | "boolean" | "string" | "number" | "float" | "any" | "unassigned" | "object" | "native-fn" | "function"|"break"|"continue"|"return"|"array"
 export interface RuntimeVal {
+   
     type: ValueType
 }
 export interface NullVal extends RuntimeVal {
     type: "null",
     value: null
+}
+export interface AnyVal extends RuntimeVal {
+    type: "any",
+    // deno-lint-ignore no-explicit-any
+    value: any
+}
+export interface NumberVal extends RuntimeVal {
+    type: "number",
+    value: number
 }
 
 export interface BoolVal extends RuntimeVal {
@@ -18,19 +28,8 @@ export interface StringVal extends RuntimeVal {
     type: "string"
     value: string
 }
-export interface IntVal extends RuntimeVal {
-    type: "int"
-    value: number
-}
-export interface FloatVal extends RuntimeVal {
-    type: "float"
-    value: number
-}
-export interface AnyVal extends RuntimeVal {
-    type: "any"
-    // deno-lint-ignore no-explicit-any
-    value: any
-}
+
+
 export interface UnassignedVal extends RuntimeVal {
     type: "unassigned"
     value: "unassigned"

@@ -19,7 +19,7 @@ function repl() {
         const input = prompt("> ")
         if (!input || input.includes("exit")) break
         const program = parser.produceAst(input)
-        // console.log(program)
+        console.log(program)
         const result = evaluate(program, env)
         console.log(result)
     }

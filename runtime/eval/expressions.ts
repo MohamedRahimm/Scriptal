@@ -1,27 +1,26 @@
-import { CallExpr, ForExpr, MemberExpr } from "../../frontend/ast.ts";
+import { CallExpr, ForExpr, MemberExpr, UnaryExpr } from "../../frontend/ast.ts";
 import { ArrayLiteral } from "../../frontend/ast.ts";
 import { WhileExpr } from "../../frontend/ast.ts";
 import { AssignmentExpr, BinaryExpr, Identifier, NumericLiteral,ObjectLiteral,IfExpr,ReturnStatement } from "../../frontend/ast.ts"
 import Environment from "../environment.ts"
 import { evaluate } from "../interpreter.ts"
-import { ArrayVal, BreakVal, ContinueVal } from "../values.ts";
+import { ArrayVal, StringVal } from "../values.ts";
+import { NumberVal } from "../values.ts";
 import { AnyVal, FunctionVal, ObjectVal } from "../values.ts";
-import { FloatVal, IntVal, NullVal, RuntimeVal,BoolVal,NativeFnValue,ReturnVal } from "../values.ts"
+import { NullVal, RuntimeVal,BoolVal,NativeFnValue,ReturnVal,UnassignedVal } from "../values.ts"
 import { evalVarDeclaration } from "./statements.ts";
 
-function evalNumBinaryExpr(lhs: IntVal, rhs: IntVal, op: string): RuntimeVal{
+function evalNumBinaryExpr(lhs: NumberVal, rhs: NumberVal, op: string): RuntimeVal{
     let res = 0
     if (op === "+") res = lhs.value + rhs.value
     else if (op === '-') res = lhs.value - rhs.value
     else if (op === '*') res = lhs.value * rhs.value
-    //DIVISION BY 0 CHECKS
     else if (op === '/') res = lhs.value / rhs.value
     else if (op === '%') res = lhs.value % rhs.value
     else if (op === "**") res = lhs.value ** rhs.value
     else if (op === "//") res = Math.floor(lhs.value / rhs.value)
 
-    if (res % 1 === 0) return { type: "int", value: res } as IntVal
-    return { type: "float", value: res } as FloatVal
+    return {type:"number",value:res} as NumberVal
 }
 
 function evalBoolBinaryExpr(lhs:RuntimeVal,rhs:RuntimeVal,op:string):RuntimeVal{
@@ -45,16 +44,16 @@ function evalBoolBinaryExpr(lhs:RuntimeVal,rhs:RuntimeVal,op:string):RuntimeVal{
             value = (lhs as AnyVal).value !== (rhs as AnyVal).value
             break
         case "<":
-            value = (lhs as AnyVal).value < (rhs as AnyVal).value
+            value = (lhs as NumberVal).value < (rhs as NumberVal).value
             break
         case ">":
-            value = (lhs as AnyVal).value > (rhs as AnyVal).value
+            value = (lhs as NumberVal).value > (rhs as NumberVal).value
             break
         case "<=":
-            value = (lhs as AnyVal).value <= (rhs as AnyVal).value
+            value = (lhs as NumberVal).value <= (rhs as NumberVal).value
             break
         case ">=":
-            value = (lhs as AnyVal).value >= (rhs as AnyVal).value
+            value = (lhs as NumberVal).value >= (rhs as NumberVal).value
             break
     }
     return {type: "boolean",value} as BoolVal
@@ -75,8 +74,18 @@ export function evalBinaryExpr(binop: BinaryExpr, env: Environment): RuntimeVal 
     ) {
         return evalBoolBinaryExpr(lhs as RuntimeVal, rhs as RuntimeVal, op)
     }
-    if ((lhs.type === "float" || lhs.type === "int") && (rhs.type === "float" || rhs.type === "int")) return evalNumBinaryExpr(lhs as IntVal, rhs as IntVal, op) 
+    if (lhs.type==="number" && rhs.type==="number") return evalNumBinaryExpr(lhs as NumberVal, rhs as NumberVal, op) 
     throw `Invalid Binary Expression cannot use the ${op} operator on ${lhs.type} and ${rhs.type}`
+}
+export function evalUnaryExpr(expr: UnaryExpr, env: Environment): RuntimeVal {
+    const rhs = evaluate(expr.right,env) as NumberVal
+    const res = {type:"number",value:0} as NumberVal
+    if(rhs.type!=="number") throw `cannot use ${expr.operator} op on ${rhs.type} type`
+    if(expr.operator==="+"){
+        res.value = +rhs.value
+    }
+    else res.value = -rhs.value
+    return res
 }
 
 export function evalIdentifier(ident: Identifier, env: Environment): RuntimeVal {
@@ -85,17 +94,19 @@ export function evalIdentifier(ident: Identifier, env: Environment): RuntimeVal 
 }
 
 export function evalAssignment(node: AssignmentExpr, env: Environment): RuntimeVal {
-    //add support for objects
+    // add support for objects and arrays
+    if(node.assignee.kind==="MemberExpr"){
+        const value = evaluate(node.value,env) 
+        return evalMemberExpr(node.assignee as MemberExpr,env,value)
+    }
+    else if(node.assignee.kind==="ArrayLiteral"){
+        const value = evaluate(node.value,env) 
+        return evalMemberExpr(node.assignee as MemberExpr,env,value)
+    }
     if (node.assignee.kind !== "Identifier") throw `Invalid LHS assignment expr ${node.assignee}`
     const varName = (node.assignee as Identifier).symbol
     return env.assignVar(varName, evaluate(node.value, env))
 }
-
-export function evalNumericLiteral(node: NumericLiteral): RuntimeVal {
-    if (node.value % 1 !== 0) return { type: "float", value: node.value } as FloatVal
-    return { type: "int", value: node.value } as IntVal
-}
-
 export function evalObjectExpr(obj:ObjectLiteral,env:Environment): RuntimeVal{
     const object = {type:"object",properties:new Map()} as ObjectVal
     for(const {key,value} of obj.properties){
@@ -124,7 +135,7 @@ export function evalCallExpr(expr:CallExpr,env:Environment): RuntimeVal{
         //Create variable for the parameter
         for(let i = 0;i<func.parameters.length;i++){
             const varName = func.parameters[i]
-            scope.declareVar(varName,args[i],false,true)
+            scope.declareVar(varName,args[i],false)
         }
         let result:RuntimeVal = {type:"null",value:null} as NullVal
         for(const stmt of func.body){
@@ -136,30 +147,50 @@ export function evalCallExpr(expr:CallExpr,env:Environment): RuntimeVal{
     
     throw `Cannot call a value that is not a function ${JSON.stringify(fn)}`
 }
-export function evalMemberExpr(expr: MemberExpr, env: Environment): RuntimeVal{
-    
-        if (expr.computed) {
-            let obj = evaluate(expr.object, env) as ObjectVal;
-            let ident = (evaluate(expr.property, env) as AnyVal).value;
-            if(ident==undefined) throw `idk man`
+export function evalMemberExpr(expr: MemberExpr, env: Environment,mutateObj?:RuntimeVal): RuntimeVal{
+        if (expr.computed) { 
+            const maybeObject = evaluate(expr.object, env)
+            const identifier = evaluate(expr.property, env) 
+            //Objects
+            if (maybeObject.type === "object") {
+                const properties = (maybeObject as ObjectVal).properties
+                const ident = (identifier as StringVal).value
+                if(ident==undefined) throw `invalid key`
+                if (properties.has(ident)) {
+                    if(mutateObj!=undefined){
+                        properties.set(ident,mutateObj)
+                    }
+                    return properties.get(ident) as RuntimeVal;
+                }
+                return {type:"unassigned",value:"unassigned"} as UnassignedVal
+            }
+            else if(maybeObject.type==="array"){
+                const elements = (maybeObject as ArrayVal).elements
+                const index = (identifier as NumberVal).value
+                if(identifier.type!=="number") throw `invalid index`
+                if(elements.length<=index||index<0) throw `index out of bounds`
+                if(mutateObj!=undefined){
+                    elements[index] = mutateObj
+                }
+                return elements[index]
+            }
+        } 
+        else {
+            const obj = evaluate(expr.object,env) as ObjectVal;
+            const ident = (expr.property as Identifier).symbol;
             if (obj.type != "object") {
                 throw `Expected type object found type ${obj.type} instead.`;
             }
             if (obj.properties.has(ident)) {
+                if(mutateObj!=undefined){
+                    obj.properties.set(ident,mutateObj)
+                }
                 return obj.properties.get(ident) as RuntimeVal;
             }
-        } else {
-            let obj = evaluate(expr.object, env) as ObjectVal;
-            let ident = (expr.property as Identifier).symbol;
-            if (obj.type != "object") {
-                throw `Expected type object found type ${obj.type} instead.`;
-            }
-            if (obj.properties.has(ident)) {
-                return obj.properties.get(ident) as RuntimeVal;
-            }
+            throw `non existant prop`
         }
-    
-        throw `non existant prop`
+    return {type:"unassigned",value:"unassigned"} as UnassignedVal
+        
 
 }
 

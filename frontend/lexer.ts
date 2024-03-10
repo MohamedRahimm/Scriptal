@@ -26,12 +26,7 @@ export enum TokenType {
 
     //Var Types
     Const,
-    Str,
-    Bool,
-    Any,
-    Int,
-    Float,
-    Obj,
+    Let,
     Function,
     Unassigned,
 
@@ -101,13 +96,8 @@ const KEYWORDS: Record<string, TokenType> = {
     "true": TokenType.Boolean,
     "false": TokenType.Boolean,
     "const": TokenType.Const,
-    "int": TokenType.Int,
-    "bool": TokenType.Bool,
-    "float": TokenType.Float,
-    "any": TokenType.Any,
-    "str": TokenType.Str,
+    "let":TokenType.Let,
     "unassigned":TokenType.Unassigned,
-    "obj":TokenType.Obj,
     "function":TokenType.Function,
     "if":TokenType.If,
     "elif":TokenType.ElseIf,

@@ -3,19 +3,20 @@ export type NodeType =
     | 'NumericLiteral'
     | 'Identifier'
     | 'BinaryExpr'
+    | 'UnaryExpr'
     | 'VarDeclaration'
     | 'AssignmentExpr'
     | "String"
-    | 'Any'
+
     | "Null"
     | "Boolean"
-    | "Bool"
+
     | "Property"
     | "ObjectLiteral"
     | "MemberExpr"
     | "CallExpr"
-    | "Or"
-    | "And"
+
+
     | "FunctionDeclaration"
     | "IfExpr"
     | "ForExpr"
@@ -38,9 +39,7 @@ export interface VarDeclaration extends Statement {
     kind: 'VarDeclaration'
     constant: boolean,
     identifier: string,
-    valueType: string,
     value?: Statement,
-    any: boolean
 }
 export interface FunctionDeclaration extends Statement {
     kind: 'FunctionDeclaration'
@@ -54,7 +53,6 @@ export interface AssignmentExpr extends Statement {
     kind: "AssignmentExpr",
     assignee: Statement,
     value: Statement,
-    valueType: string
 }
 
 export interface CallExpr extends Statement {
@@ -71,6 +69,11 @@ export interface MemberExpr extends Statement {
 export interface BinaryExpr extends Statement {
     kind: 'BinaryExpr'
     left: Statement,
+    right: Statement,
+    operator: string
+}
+export interface UnaryExpr extends Statement {
+    kind: 'UnaryExpr'
     right: Statement,
     operator: string
 }
@@ -114,16 +117,7 @@ export interface Unassigned extends Statement {
     kind: "Unassigned"
     value: "unassigned"
 }
-export interface Bool extends Statement {
-    kind: "Bool"
-    value: boolean
-}
 
-export interface Any extends Statement {
-    kind: 'Any'
-    // deno-lint-ignore no-explicit-any
-    value: any
-}
 
 export interface String extends Statement {
     kind: "String",

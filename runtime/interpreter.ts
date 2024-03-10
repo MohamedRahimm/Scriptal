@@ -1,13 +1,13 @@
-import { RuntimeVal, NullVal, BoolVal, StringVal } from "./values.ts";
+import { RuntimeVal, NullVal, BoolVal, StringVal, NumberVal } from "./values.ts";
 import { BinaryExpr, NumericLiteral, Statement, Program, Identifier, VarDeclaration, AssignmentExpr, Boolean, Null, String, ObjectLiteral,CallExpr, ForExpr, Unassigned, MemberExpr } from "../frontend/ast.ts"
 import Environment from "./environment.ts";
-import { evalIdentifier, evalBinaryExpr, evalAssignment, evalNumericLiteral,evalObjectExpr, evalCallExpr, evalIfExpr, evalForExpr,evalWhileExpr, evalMemberExpr, evalReturnStatement, evalArrayExpr, } from "./eval/expressions.ts";
+import { evalIdentifier, evalBinaryExpr, evalAssignment,evalObjectExpr, evalCallExpr, evalIfExpr, evalForExpr,evalWhileExpr, evalMemberExpr, evalReturnStatement, evalArrayExpr,evalUnaryExpr } from "./eval/expressions.ts";
 import { evalFuncDeclaration, evalProgram, evalVarDeclaration } from "./eval/statements.ts"
 import { FunctionDeclaration } from "../frontend/ast.ts";
 import { IfExpr } from "../frontend/ast.ts";
 import { WhileExpr } from "../frontend/ast.ts";
 import { UnassignedVal } from "./values.ts";
-import { ReturnStatement,ArrayLiteral } from "../frontend/ast.ts";
+import { ReturnStatement,ArrayLiteral,UnaryExpr } from "../frontend/ast.ts";
 import { ContinueVal } from "./values.ts";
 import { BreakVal } from "./values.ts";
 
@@ -15,7 +15,7 @@ import { BreakVal } from "./values.ts";
 export function evaluate(astNode: Statement, env: Environment): RuntimeVal {
     switch (astNode.kind) {
         case "NumericLiteral":
-            return evalNumericLiteral(astNode as NumericLiteral)
+            return { value: ((astNode as NumericLiteral).value), type: "number" } as NumberVal
         case "Boolean":
             return { value: ((astNode as Boolean).value), type: "boolean" } as BoolVal
         case "Null":
@@ -30,6 +30,8 @@ export function evaluate(astNode: Statement, env: Environment): RuntimeVal {
             return evalObjectExpr(astNode as ObjectLiteral, env)
         case "BinaryExpr":
             return evalBinaryExpr(astNode as BinaryExpr, env)
+        case "UnaryExpr":
+            return evalUnaryExpr(astNode as UnaryExpr, env)
         case "CallExpr":
             return evalCallExpr(astNode as CallExpr, env)
         case "MemberExpr":

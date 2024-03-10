@@ -1,9 +1,9 @@
-import { Any, ArrayLiteral, ObjectLiteral, Unassigned, WhileExpr } from './ast.ts';
+import { ArrayLiteral, ObjectLiteral, Unassigned, WhileExpr } from './ast.ts';
 import { MemberExpr } from './ast.ts';
 import { ReturnStatement,ContinueStatement,BreakStatement } from './ast.ts';
 
 import { CallExpr,FunctionDeclaration,IfExpr,ForExpr } from './ast.ts';
-import { Statement, Program, BinaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Property } from './ast.ts'
+import { Statement, Program, BinaryExpr,UnaryExpr, NumericLiteral, Identifier, VarDeclaration, AssignmentExpr, Null, Boolean, String, Property } from './ast.ts'
 import { Token, TokenType, tokenize } from './lexer.ts'
 export class Parser {
     private tokens: Token[] = []
@@ -22,12 +22,7 @@ export class Parser {
     private parseStatement(inFunction=false,inLoop=false): Statement {
         switch (this.at().type) {
             case TokenType.Const:
-            case TokenType.Int:
-            case TokenType.Bool:
-            case TokenType.Float:
-            case TokenType.Any:
-            case TokenType.Str:
-            case TokenType.Obj:
+            case TokenType.Let:
                 return this.parseVarDec(inFunction,inLoop)
             case TokenType.Function:
                 return this.parseFunctionDec(inFunction,inLoop)
@@ -68,40 +63,37 @@ export class Parser {
        return fn
     }
     private parseVarDec(inFunction=false,inLoop=false): Statement {
-        let isConstant = false
-        if (this.at().type == TokenType.Const) {
-            isConstant = true
-            this.eat()
-        }
-        const validUserValTypes = new Set<TokenType>([TokenType.Any, TokenType.Bool, TokenType.Str, TokenType.Float, TokenType.Int,TokenType.Obj])
-        if (validUserValTypes.has(this.at().type) == false) throw `invalid var declaration type supported types are str etc...`
-        const userValType = this.eat().value
-        const identifier = this.expect(TokenType.Identifier, "Invalid var name").value
-        if(this.at().type===TokenType.Semicolon){
-            if(isConstant===true) throw `Must initate const vars`
-            return{
-                kind: "VarDeclaration",
-                value: undefined,
-                constant: isConstant,
-                identifier,
-                valueType: userValType,
-                any: userValType === "any"
-            } as VarDeclaration
-        }
-        this.expect(
-            TokenType.Equals,
-            "Expected equals token following identifier in var declaration.",
-        );
-        const declaration = {
-            kind: "VarDeclaration",
-            value: this.parseExpr(inFunction,inLoop),
-            constant: isConstant,
-            identifier,
-            valueType: userValType,
-            any: userValType === "any"
-        } as VarDeclaration
+        const isConstant = this.eat().type == TokenType.Const;
+		const identifier = this.expect(
+			TokenType.Identifier,
+			"Expected identifier name following let | const keywords."
+		).value;
 
-        return declaration
+		if (this.at().type == TokenType.Semicolon) {
+			this.eat(); // expect semicolon
+			if (isConstant) {
+				throw "Must assigne value to constant expression. No value provided.";
+			}
+
+			return {
+				kind: "VarDeclaration",
+				identifier,
+				constant: false,
+			} as VarDeclaration;
+		}
+
+		this.expect(
+			TokenType.Equals,
+			"Expected equals token following identifier in var declaration."
+		);
+
+		const declaration = {
+			kind: "VarDeclaration",
+			value: this.parseExpr(inFunction,inLoop),
+			identifier,
+			constant: isConstant,
+		} as VarDeclaration;
+		return declaration;
 
     }
     private parseIfExpr(inFunction=false,inLoop=false):Statement{
@@ -274,10 +266,10 @@ export class Parser {
         return left
     }
     private parseExponentExpr(inFunction=false,inLoop=false): Statement {
-        let left = this.parseCallMemberExpr(inFunction,inLoop)
+        let left = this.parseUnaryExpr(inFunction,inLoop)
         while (this.at().value === "**") {
             const operator = this.eat().value
-            const right = this.parseCallMemberExpr(inFunction,inLoop)
+            const right = this.parseUnaryExpr(inFunction,inLoop)
             left = {
                 kind: "BinaryExpr",
                 left,
@@ -286,6 +278,14 @@ export class Parser {
             } as BinaryExpr
         }
         return left
+    }
+    private parseUnaryExpr(inFunction=false,inLoop=false): Statement {
+        if(this.at().value==="+"||this.at().value==="-"){
+            const op = this.eat().value
+            const right = this.parsePrimaryExpr(inFunction,inLoop)
+            return {kind:"UnaryExpr",operator:op,right} as UnaryExpr
+        }
+        return this.parseCallMemberExpr(inFunction,inLoop)
     }
     private parseCallMemberExpr(inFunction=false,inLoop=false):Statement {
       const member  = this.parseMemberExpr(inFunction,inLoop)
