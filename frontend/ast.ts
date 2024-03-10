@@ -1,148 +1,143 @@
 export type NodeType =
-    | "Program"
-    | 'NumericLiteral'
-    | 'Identifier'
-    | 'BinaryExpr'
-    | 'UnaryExpr'
-    | 'VarDeclaration'
-    | 'AssignmentExpr'
-    | "String"
+  | "Program"
+  | "NumericLiteral"
+  | "Identifier"
+  | "BinaryExpr"
+  | "UnaryExpr"
+  | "VarDeclaration"
+  | "AssignmentExpr"
+  | "String"
+  | "Null"
+  | "Boolean"
+  | "Property"
+  | "ObjectLiteral"
+  | "MemberExpr"
+  | "CallExpr"
+  | "FunctionDeclaration"
+  | "IfStmt"
+  | "ForStmt"
+  | "WhileStmt"
+  | "Unassigned"
+  | "BreakStmt"
+  | "ContStmt"
+  | "ReturnStmt"
+  | "ArrayLiteral";
 
-    | "Null"
-    | "Boolean"
-
-    | "Property"
-    | "ObjectLiteral"
-    | "MemberExpr"
-    | "CallExpr"
-
-
-    | "FunctionDeclaration"
-    | "IfExpr"
-    | "ForExpr"
-    | "WhileExpr"
-    | "Unassigned"
-    | "BreakStatement"
-    | "ContinueStatement"
-    |"ReturnStatement"
-    | "ArrayLiteral"
-
-
-export interface Statement {
-    kind: NodeType
+export interface Stmt {
+  kind: NodeType;
 }
-export interface Program extends Statement {
-    kind: 'Program'
-    body: Statement[]
+export interface Program extends Stmt {
+  kind: "Program";
+  body: Stmt[];
 }
-export interface VarDeclaration extends Statement {
-    kind: 'VarDeclaration'
-    constant: boolean,
-    identifier: string,
-    value?: Statement,
-}
-export interface FunctionDeclaration extends Statement {
-    kind: 'FunctionDeclaration'
-    parameters: string[]
-    name: string,
-    body: Statement[]
+export interface VarDeclaration extends Stmt {
+  kind: "VarDeclaration";
+  constant: boolean;
+  identifier: string;
+  value?: Stmt;
 }
 
-
-export interface AssignmentExpr extends Statement {
-    kind: "AssignmentExpr",
-    assignee: Statement,
-    value: Statement,
+export interface FunctionDeclaration extends Stmt {
+  kind: "FunctionDeclaration";
+  parameters: string[];
+  name: string;
+  body: Stmt[];
+}
+export interface IfStmt extends Stmt {
+  kind: "IfStmt";
+  body: Stmt[];
+  condition: Stmt;
+  elseExpr?: Stmt[];
+}
+export interface ForStmt extends Stmt {
+  kind: "ForStmt";
+  body: Stmt[];
+  initVar: VarDeclaration;
+  iteration: AssignmentExpr;
+  condition: Stmt;
+}
+export interface WhileStmt extends Stmt {
+  kind: "WhileStmt";
+  body: Stmt[];
+  condition: Stmt;
 }
 
-export interface CallExpr extends Statement {
-    kind: 'CallExpr'
-    args: Statement[],
-    caller: Statement,
+export interface AssignmentExpr extends Stmt {
+  kind: "AssignmentExpr";
+  assignee: Stmt;
+  value: Stmt;
 }
-export interface MemberExpr extends Statement {
-    kind: 'MemberExpr'
-    object: Statement,
-    property: Statement,
-    computed: boolean
+export interface BinaryExpr extends Stmt {
+  kind: "BinaryExpr";
+  left: Stmt;
+  right: Stmt;
+  operator: string;
 }
-export interface BinaryExpr extends Statement {
-    kind: 'BinaryExpr'
-    left: Statement,
-    right: Statement,
-    operator: string
-}
-export interface UnaryExpr extends Statement {
-    kind: 'UnaryExpr'
-    right: Statement,
-    operator: string
-}
-export interface IfExpr extends Statement {
-    kind: 'IfExpr'
-    body: Statement[]
-    condition: Statement
-    elseExpr?: Statement[]
-    
-}
-export interface ForExpr extends Statement {
-    kind: 'ForExpr'
-    body: Statement[]
-    initVar: VarDeclaration
-    iteration: AssignmentExpr
-    condition: Statement
-    
-}
-export interface WhileExpr extends Statement {
-    kind: 'WhileExpr'
-    body: Statement[]
-    condition: Statement
-}
-export interface Identifier extends Statement {
-    kind: 'Identifier'
-    symbol: string
-}
-export interface NumericLiteral extends Statement {
-    kind: "NumericLiteral"
-    value: number
-}
-export interface Null extends Statement {
-    kind: "Null"
-    value: null
-}
-export interface Boolean extends Statement {
-    kind: "Boolean"
-    value: boolean
-}
-export interface Unassigned extends Statement {
-    kind: "Unassigned"
-    value: "unassigned"
+export interface ObjectLiteral extends Stmt {
+  kind: "ObjectLiteral";
+  properties: Property[];
 }
 
+export interface UnaryExpr extends Stmt {
+  kind: "UnaryExpr";
+  right: Stmt;
+  operator: string;
+}
 
-export interface String extends Statement {
-    kind: "String",
-    value: string
+export interface CallExpr extends Stmt {
+  kind: "CallExpr";
+  args: Stmt[];
+  caller: Stmt;
 }
-export interface Property extends Statement {
-    kind: "Property",
-    key: string,
-    value?: Statement,
+export interface MemberExpr extends Stmt {
+  kind: "MemberExpr";
+  object: Stmt;
+  property: Stmt;
+  computed: boolean;
 }
-export interface ObjectLiteral extends Statement {
-    kind: "ObjectLiteral",
-    properties: Property[]
+export interface Property extends Stmt {
+  kind: "Property";
+  key: string;
+  value?: Stmt;
 }
-export interface BreakStatement extends Statement{
-    kind: "BreakStatement"
+
+export interface Identifier extends Stmt {
+  kind: "Identifier";
+  symbol: string;
 }
-export interface ContinueStatement extends Statement{
-    kind: "ContinueStatement"
+export interface NumericLiteral extends Stmt {
+  kind: "NumericLiteral";
+  value: number;
 }
-export interface ReturnStatement extends Statement{
-    kind: "ReturnStatement"
-    value: Statement
+export interface Null extends Stmt {
+  kind: "Null";
+  value: null;
 }
-export interface ArrayLiteral extends Statement{
-    kind: "ArrayLiteral",
-    value: Statement[]
+export interface Boolean extends Stmt {
+  kind: "Boolean";
+  value: boolean;
+}
+export interface Unassigned extends Stmt {
+  kind: "Unassigned";
+  value: "unassigned";
+}
+
+export interface String extends Stmt {
+  kind: "String";
+  value: string;
+}
+
+export interface BreakStmt extends Stmt {
+  kind: "BreakStmt";
+}
+export interface ContStmt extends Stmt {
+  kind: "ContStmt";
+}
+export interface ReturnStmt extends Stmt {
+  kind: "ReturnStmt";
+  value: Stmt;
+}
+export interface ArrayLiteral extends Stmt {
+  kind: "ArrayLiteral";
+  elements: Stmt[];
 }

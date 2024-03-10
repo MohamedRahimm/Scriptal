@@ -3,7 +3,7 @@ for(let i = 0;i<1;i+=1){
     for(let j = 0;j<5;j+=1){
         print(x[i][j]);
     };
-};`
+};
 const test = {helo:1};
 test["helo"] = {nested:":0"};
 test.helo.nested;
@@ -11,4 +11,19 @@ const arrTest = [1,2,3];
 arrTest[0] = [];
 arrTest;
 test.helo.nested = true;
-test;
+for(let i = 0;i<len(arrTest);i+=1){
+    print("u should see me 3 times");
+};`
+let linkedList = {
+    val:1,
+    next:{
+        val:2,
+        next:{
+            val:3,
+            next: null
+        },
+    }
+};
+linkedList.next.next.val = 100;
+linkedList.next = false;
+linkedList;
