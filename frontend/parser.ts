@@ -500,7 +500,7 @@ export class Parser {
           props.push(this.parseAssignmentExpr(inFunction));
         }
         this.expect(TokenType.CloseBracket, "Expected closing bracket");
-        return { kind: "ArrayLiteral", value: props } as ArrayLiteral;
+        return { kind: "ArrayLiteral", elements: props } as ArrayLiteral;
       }
       default:
         throw `Unexpected token ${JSON.stringify(token)}`;
