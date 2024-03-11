@@ -2,21 +2,9 @@ import { Parser } from "./frontend/parser.ts";
 import { globalEnv } from "./runtime/environment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
 
-async function init() {
-  while (true) {
-    const mode = prompt("Read File(RF) or REPL Mode(REPL)? >");
-    if (mode?.includes("RF") || mode?.includes("rf")) {
-      const res = await run("test.txt");
-      console.log(res);
-      return;
-    } else if (mode?.includes("REPL") || mode?.includes("repl")) {
-      return repl();
-    } else if (!mode || mode.includes("exit")) break;
-    else {
-      throw `Invalid Mode`;
-    }
-  }
-}
+const file = Deno.args[0];
+if (file) run(file);
+else repl();
 
 async function run(filename: string) {
   const parser = new Parser();
@@ -25,7 +13,7 @@ async function run(filename: string) {
   const program = parser.produceAst(input);
   // console.log(program)
   const result = evaluate(program, env);
-  return result;
+  console.log(result);
 }
 function repl() {
   const parser = new Parser();
@@ -33,11 +21,10 @@ function repl() {
   console.log("\nrepl v0.1");
   while (true) {
     const input = prompt("> ");
-    if (!input || input.includes("exit")) break;
+    if (!input || input === "exit" || input === "EXIT") break;
     const program = parser.produceAst(input);
     // console.log(program);
     const result = evaluate(program, env);
     console.log(result);
   }
 }
-init();

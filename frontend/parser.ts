@@ -134,7 +134,7 @@ export class Parser {
     const condition = this.parseAssignmentExpr(inFunction, inLoop);
     this.expect(TokenType.CloseParen, "Expected )");
     const body = this.parseBlockStatement(inFunction, inLoop);
-    if (this.tokens[this.idx + 1].type === TokenType.Else) {
+    if (this.tokens[this.idx + 1]?.type === TokenType.Else) {
       this.expect(TokenType.Semicolon, "Expected ;");
     }
     let elseExpr: Stmt[] = [];

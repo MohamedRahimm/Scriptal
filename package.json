@@ -1,6 +1,6 @@
 {
+  "version": "1.0.0",
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "seed:init": "ts-node ./src/seeds/init.ts"
+    "typescript": "^5.3.3"
   }
 }
