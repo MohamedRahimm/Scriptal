@@ -2,7 +2,7 @@ A programming language created in Typescript
 
 # Dependency [Deno](https://deno.com/) is needed to use this repo
 
-# Building To build the content of this repository, run `npm i`
+## Building To build the content of this repository, run `npm i`
 
 ```rs
 git clone https://github.com/MohamedRahimm/custom-ts-interpreter.git
@@ -14,7 +14,7 @@ npm install
 - To run a specific file: `deno task start <DIR/FILENAME>`
 - To run in REPL mode `deno task start`
 
-# Examples You can find examples in /showcase/main.txt
+## Examples You can find examples in /showcase/main.txt
 
 ## Variables Mutable variables are created with:
 
@@ -102,7 +102,7 @@ let x = [1,2,true,unassigned];
 
 ## Comments
 
-Comments are created using the ``` character
+Comments are created using the ` character
 
 ```rs
 `Lorem Ipsum`
@@ -134,8 +134,11 @@ else{
 }
 ```
 
-**Note** if statements without block statements({}) are invalid ##Loops ###For
-Loops For loops can be created with:
+**Note** if statements without block statements({}) are invalid
+
+## Loops
+
+### For Loops For loops can be created with:
 
 ```rs
 for(let i =0;i<3;i+=1){
@@ -146,7 +149,9 @@ for(let i =0;i<3;i+=1){
 };
 ```
 
-**Note** for(;;) is invalid ###While Loops While loops can be created with:
+**Note** for(;;) is invalid
+
+### While Loops While loops can be created with:
 
 ```rs
 let i = 0;
@@ -160,7 +165,24 @@ while(i<3){
 
 ## Operators
 
+Standard Operators:
+
+- `<`
+- `>`
+- `^`
+- `<=`
+- `>=`
+- `&&`
+- `||`
+- `==`
+- `!=`
+- `/`
+- `%`
+- `%=`
+
 Unique Operators:
 
-- `^` exponent
-- `//` divides and floors the result
+- `^` | `^=` exponent
+- `//`| `//=` divides and floors the result
+
+**Note** This list is not exhaustive
