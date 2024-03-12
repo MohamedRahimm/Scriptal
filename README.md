@@ -14,9 +14,13 @@ npm install
 - To run a specific file: `deno task start <DIR/FILENAME>`
 - To run in REPL mode `deno task start`
 
-## Examples You can find examples in /showcase/main.txt
+## Examples
 
-## Variables Mutable variables are created with:
+You can find examples in /showcase/main.txt
+
+## Variables
+
+Mutable variables are created with:
 
 ```rs
 let x = 0;
@@ -85,14 +89,21 @@ let x = unassigned;
 
 ## Data Structures
 
-### Objects Objects are similar to javascript's native objects:
+### Objects
+
+Objects are similar to javascript's native objects except member expressions are
+not coerced to type string
+
+Objects can be created with:
 
 ```rs
 const x = {lorem:"ipsum"};
 print(x.lorem);
 ```
 
-### Arrays Arrays are similar to javascript's native arrays:
+### Arrays
+
+Arrays are similar to javascript's native arrays:
 
 #### Array methods are currently unsupported
 
@@ -110,7 +121,7 @@ Comments are created using the ` character
 
 ## Functions
 
-Functions return the last computed value or of null. You can create functions
+Functions return the last computed value or of null. Functions can be created
 with:
 
 ```rs
@@ -134,11 +145,13 @@ else{
 }
 ```
 
-**Note** if statements without block statements({}) are invalid
+**Note** if statements without block statements are invalid
 
 ## Loops
 
-### For Loops For loops can be created with:
+### For Loops
+
+For loops can be created with:
 
 ```rs
 for(let i =0;i<3;i+=1){
@@ -151,7 +164,9 @@ for(let i =0;i<3;i+=1){
 
 **Note** for(;;) is invalid
 
-### While Loops While loops can be created with:
+### While Loops
+
+While loops can be created with:
 
 ```rs
 let i = 0;
