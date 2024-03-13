@@ -3,7 +3,9 @@ import {
   makeNativeFn,
   NullVal,
   NumberVal,
+  ObjectVal,
   RuntimeVal,
+  StringVal,
 } from "./values.ts";
 export function globalEnv() {
   const env = new Environment();
@@ -20,14 +22,74 @@ export function globalEnv() {
   env.declareVar(
     "len",
     makeNativeFn((args) => {
-      if (args[0].type !== "array") throw `argument is not of type array`;
-      return {
-        type: "number",
-        value: (args[0] as ArrayVal).elements.length,
-      } as NumberVal;
+      const argType = args[0]?.type;
+      if (argType === "array") {
+        return {
+          type: "number",
+          value: (args[0] as ArrayVal).elements.length,
+        } as NumberVal;
+      } else if (argType === "string") {
+        return {
+          type: "number",
+          value: (args[0] as StringVal).value.length,
+        } as NumberVal;
+      }
+      throw `argument is not of type array or string`;
     }),
     true,
   );
+  env.declareVar("Math", {
+    type: "object",
+    properties: new Map([
+      [
+        "abs",
+        makeNativeFn((args) => {
+          const arg = (args[0] as NumberVal)?.value;
+          if (!arg) throw `Missing argument`;
+          const value = arg < 0 ? arg * -1 : arg;
+          return { type: "number", value } as NumberVal;
+        }),
+      ],
+      [
+        "floor",
+        makeNativeFn((args) => {
+          const arg = (args[0] as NumberVal)?.value;
+          if (!arg) throw `Missing argument`;
+          const value = Math.floor(arg);
+          return { type: "number", value } as NumberVal;
+        }),
+      ],
+      [
+        "ceil",
+        makeNativeFn((args) => {
+          const arg = (args[0] as NumberVal)?.value;
+          if (!arg) throw `Missing argument`;
+          const value = Math.ceil(arg);
+          return { type: "number", value } as NumberVal;
+        }),
+      ],
+      [
+        "round",
+        makeNativeFn((args) => {
+          const arg = (args[0] as NumberVal)?.value;
+          if (!arg) throw `Missing argument`;
+          const value = Math.round(arg);
+          return { type: "number", value } as NumberVal;
+        }),
+      ],
+      [
+        "random",
+        makeNativeFn((args) => {
+          const min = (args[0] as NumberVal)?.value;
+          if (!min) throw `Missing minimum number argument`;
+          const max = (args[1] as NumberVal)?.value;
+          if (!max) throw `Missing maximum number argument`;
+          const value = Math.random() * (max - min) + min;
+          return { type: "number", value } as NumberVal;
+        }),
+      ],
+    ]),
+  } as ObjectVal, true);
   return env;
 }
 export default class Environment {

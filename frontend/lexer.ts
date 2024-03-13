@@ -108,10 +108,13 @@ export interface Token {
 function makeToken(value = "", type: TokenType): Token {
   return { value, type };
 }
-//Checks if character's ASCII value is in the english alphabet
-function isAlpha(str: string) {
+//Checks if character's ASCII value is in the english alphabet or an underscore or digit
+function isValidIdentifier(str: string) {
   const char = str.charCodeAt(0);
-  if ((char >= 91 && char <= 96) || char < 65 || char > 122) return false;
+  if (
+    ((char >= 91 && char <= 96) || char < 65 || char > 122) && char != 95 &&
+    !isInt(str)
+  ) return false;
   return true;
 }
 //Checks if character's ASCII value is within the digits 0-9
@@ -144,10 +147,12 @@ export function tokenize(src: string): Token[] {
       }
       i += num.length - 1;
       tokens.push(makeToken(num, TokenType.Number));
-    } else if (isAlpha(src[i])) {
+    } else if (isValidIdentifier(src[i])) {
       let ident = "";
       for (let j = i; j < src.length; j++) {
-        if (!isAlpha(src[j])) break;
+        // if identifier starts with a digit it is invalid
+        if (i === j && isInt(src[j])) break;
+        if (!isValidIdentifier(src[j])) break;
         ident += src[j];
       }
       i += ident.length - 1;

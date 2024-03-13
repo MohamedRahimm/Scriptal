@@ -13,17 +13,27 @@ arrTest;
 test.helo.nested = true;
 for(let i = 0;i<len(arrTest);i+=1){
     print("u should see me 3 times");
-};`
+};
 let linkedList = {
     val:1,
     next:{
         val:2,
         next:{
             val:3,
-            next: null
+            next: function test (){
+                print("jiefjoef");
+            };
         },
     }
 };
 linkedList.next.next.val = 100;
 linkedList.next = false;
-linkedList;
+linkedList;`
+let test = {
+    x: function x(){
+        print("IT WORKS");
+    },
+    y:{}
+};
+test.y["j"] = 1;
+print("true");

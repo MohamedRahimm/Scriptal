@@ -2,7 +2,9 @@ A programming language created in Typescript
 
 # Dependency [Deno](https://deno.com/) is needed to use this repo
 
-## Building To build the content of this repository, run `npm i`
+## Building
+
+To build the content of this repository, run `npm i`
 
 ```rs
 git clone https://github.com/MohamedRahimm/custom-ts-interpreter.git
@@ -32,11 +34,13 @@ Constant variables are created with:
 const x = 0;
 ```
 
-**Note** Semicolons are required at the end of every declaration or expression
+**Note Semicolons are required at the end of every declaration or expression**
 
 ## Primitive Data Types
 
-### Strings Strings can be created with:
+### Strings
+
+Strings can be created with:
 
 ```rs
 let x = "lorem ipsum";
@@ -53,7 +57,7 @@ let x = 100;
 or
 
 ```rs
-let x =1.01;
+let x = 1.01;
 ```
 
 ### Booleans
@@ -62,7 +66,7 @@ Booleans can be created with:
 
 ```rs
 let x = true;
-let y = false
+let y = false;
 ```
 
 ### Null
@@ -126,7 +130,7 @@ with:
 
 ```rs
 function x(param1,param2){
-    return param1 == param2
+    return param1 == param2;
 };
 ```
 
@@ -138,14 +142,14 @@ If statements are created with:
 
 ```rs
 if(1==1){
-    print("1 is in fact equal to 1")
+    print("1 is in fact equal to 1");
 }
 else{
-    "this isn't right 🧐"
-}
+    print("this isn't right 🧐");
+};
 ```
 
-**Note** if statements without block statements are invalid
+**Note if statements without block statements are invalid**
 
 ## Loops
 
@@ -162,7 +166,7 @@ for(let i =0;i<3;i+=1){
 };
 ```
 
-**Note** for(;;) is invalid
+**Note for( ; ; ) is invalid**
 
 ### While Loops
 
@@ -191,7 +195,6 @@ Standard Operators:
 - `||`
 - `==`
 - `!=`
-- `/`
 - `%`
 - `%=`
 
@@ -200,4 +203,4 @@ Unique Operators:
 - `^` | `^=` exponent
 - `//`| `//=` divides and floors the result
 
-**Note** This list is not exhaustive
+**Note This list is not exhaustive**

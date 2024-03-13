@@ -106,6 +106,9 @@ export class Parser {
     return declaration;
   }
   private parseFunctionDec(inFunction = false, inLoop = false): Stmt {
+    if (this.at().type !== TokenType.Function) {
+      return this.parseAssignmentExpr(inFunction, inLoop);
+    }
     this.eat();
     const name = this.expect(
       TokenType.Identifier,
@@ -271,8 +274,13 @@ export class Parser {
       this.at().type !== TokenType.EOF &&
       this.at().type !== TokenType.CloseBrace
     ) {
-      const key =
-        this.expect(TokenType.Identifier, "Invalid key for object").value;
+      // const key = this.expect(TokenType.Identifier, "Invalid key for object").value;
+      let key;
+      if (this.at().type === TokenType.Identifier) {
+        key = this.expect(TokenType.Identifier, "Invalid key for object").value;
+      } else if (this.at().type === TokenType.QuotationMark) {
+        key = (this.parsePrimaryExpr() as String).value;
+      } else "Invalid key for object";
       // allows {key,...}
       if (this.at().type == TokenType.Comma) {
         this.eat();
@@ -284,7 +292,7 @@ export class Parser {
         continue;
       }
       this.expect(TokenType.Colon, "Expected :");
-      const value = this.parseAssignmentExpr(inFunction, inLoop);
+      const value = this.parseFunctionDec(inFunction, inLoop);
       properties.push({ kind: "Property", value, key } as Property);
       if (this.at().type !== TokenType.CloseBrace) {
         this.expect(

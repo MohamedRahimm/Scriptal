@@ -216,13 +216,13 @@ export function evalMemberExpr(
       const properties = (maybeObject as ObjectVal).properties;
       const ident = (identifier as StringVal).value;
       if (ident == undefined) throw `invalid key`;
+      if (mutateObj != undefined) {
+        properties.set(ident, mutateObj);
+      }
       if (properties.has(ident)) {
-        if (mutateObj != undefined) {
-          properties.set(ident, mutateObj);
-        }
         return properties.get(ident) as RuntimeVal;
       }
-      return { type: "unassigned", value: "unassigned" } as UnassignedVal;
+      throw `Cannot set properties of unassinged`;
     } else if (maybeObject.type === "array") {
       const elements = (maybeObject as ArrayVal).elements;
       const index = (identifier as NumberVal).value;
@@ -240,13 +240,13 @@ export function evalMemberExpr(
     if (obj.type != "object") {
       throw `Expected type object found type ${obj.type} instead.`;
     }
+    if (mutateObj != undefined) {
+      obj.properties.set(ident, mutateObj);
+    }
     if (obj.properties.has(ident)) {
-      if (mutateObj != undefined) {
-        obj.properties.set(ident, mutateObj);
-      }
       return obj.properties.get(ident) as RuntimeVal;
     }
-    throw `non existant prop`;
+    throw `Cannot set properties of unassinged`;
   }
   return { type: "unassigned", value: "unassigned" } as UnassignedVal;
 }
