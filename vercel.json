@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/**/*.[jt]s": {
+    "main/**/*.[jt]s": {
       "runtime": "vercel-dev-builder@0.0.5"
     }
   }
