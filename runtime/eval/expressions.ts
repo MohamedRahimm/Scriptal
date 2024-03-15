@@ -6,6 +6,7 @@ import {
   Identifier,
   MemberExpr,
   ObjectLiteral,
+  StringLiteral,
   UnaryExpr,
 } from "../../frontend/ast.ts";
 import {
@@ -13,6 +14,7 @@ import {
   ArrayVal,
   BoolVal,
   FunctionVal,
+  makeNativeFn,
   NativeFnValue,
   NullVal,
   NumberVal,
@@ -79,9 +81,23 @@ function evalBoolBinaryExpr(
         (rhs as BoolVal).value === true;
       break;
     case "==":
+      //for object reference comparisons(linked list cycles)
+      if (
+        (lhs as AnyVal).value === undefined ||
+        (rhs as AnyVal).value === undefined
+      ) {
+        return { type: "boolean", value: lhs === rhs } as BoolVal;
+      }
       value = (lhs as AnyVal).value === (rhs as AnyVal).value;
       break;
     case "!=":
+      //for object reference comparisons(linked list cycles)
+      if (
+        (lhs as AnyVal).value === undefined ||
+        (rhs as AnyVal).value === undefined
+      ) {
+        return { type: "boolean", value: lhs !== rhs } as BoolVal;
+      }
       value = (lhs as AnyVal).value !== (rhs as AnyVal).value;
       break;
     case "<":
@@ -162,21 +178,99 @@ export function evalObjectExpr(
   obj: ObjectLiteral,
   env: Environment,
 ): RuntimeVal {
-  const object = { type: "object", properties: new Map() } as ObjectVal;
+  const object = {
+    type: "object",
+    properties: new Map(),
+    value: undefined,
+  } as ObjectVal;
   for (const { key, value } of obj.properties) {
     const runtimeVal = (value == undefined)
       ? env.lookupVar(key)
       : evaluate(value, env);
     object.properties.set(key, runtimeVal);
   }
+
   return object;
 }
-export function evalArrayExpr(arr: ArrayLiteral, env: Environment): RuntimeVal {
-  const array = { type: "array", elements: [] } as ArrayVal;
-  for (const element of arr.elements) {
-    array.elements.push(evaluate(element, env));
+export function evalArrayExpr(
+  arr: ArrayLiteral,
+  env: Environment,
+): RuntimeVal {
+  const array = {
+    type: "array",
+    methods: new Map([
+      [
+        "push",
+        makeNativeFn((args) => {
+          for (let i = 0; i < args.length; i++) {
+            array.elements.push(args[i]);
+          }
+          return {
+            type: "array",
+            elements: array.elements,
+            methods: array.methods,
+          } as ArrayVal;
+        }),
+      ],
+      [
+        "pop",
+        makeNativeFn(() => {
+          const elem = array.elements.pop();
+          return elem ||
+            { type: "unassigned", value: "unassigned" } as UnassignedVal;
+        }),
+      ],
+      [
+        "shift",
+        makeNativeFn(() => {
+          const elem = array.elements.shift();
+          return elem ||
+            { type: "unassigned", value: "unassigned" } as UnassignedVal;
+        }),
+      ],
+    ]),
+    elements: [],
+  } as ArrayVal;
+  if (arr?.elements != undefined) {
+    for (const element of arr.elements) {
+      array.elements.push(evaluate(element, env));
+    }
   }
+
   return array;
+}
+export function evalStringExpr(
+  str: StringLiteral,
+  env: Environment,
+): RuntimeVal {
+  const string = {
+    type: "string",
+    methods: new Map([
+      [
+        "concat",
+        makeNativeFn((args) => {
+          for (let i = 0; i < args.length; i++) {
+            if (args[i].type !== "string") {
+              throw `${JSON.stringify(args[i])} is not of type string`;
+            }
+            string.value += (args[i] as StringVal).value;
+          }
+          return { type: "string", value: string.value } as StringVal;
+        }),
+      ],
+    ]),
+    value: str.value,
+  } as StringVal;
+  if (str?.methods != undefined) {
+    for (const { key, value } of str.methods) {
+      const runtimeVal = (value == undefined)
+        ? env.lookupVar(key)
+        : evaluate(value, env);
+      string.methods.set(key, runtimeVal);
+    }
+  }
+
+  return string;
 }
 export function evalCallExpr(expr: CallExpr, env: Environment): RuntimeVal {
   const args = expr.args.map((arg) => evaluate(arg, env));
@@ -222,7 +316,7 @@ export function evalMemberExpr(
       if (properties.has(ident)) {
         return properties.get(ident) as RuntimeVal;
       }
-      throw `Cannot set properties of unassinged`;
+      // throw `Cannot set properties of unassinged`;
     } else if (maybeObject.type === "array") {
       const elements = (maybeObject as ArrayVal).elements;
       const index = (identifier as NumberVal).value;
@@ -232,12 +326,22 @@ export function evalMemberExpr(
         elements[index] = mutateObj;
       }
       return elements[index];
+    } else if (maybeObject.type === "string") {
+      const value = (maybeObject as StringVal).value;
+      const index = (identifier as NumberVal).value;
+      if (identifier.type !== "number") throw `invalid index`;
+      if (value.length <= index || index < 0) throw `index out of bounds`;
+      return evalStringExpr(
+        { kind: "StringLiteral", value: value[index] } as StringLiteral,
+        env,
+      );
     }
   } // handles obj.member
   else {
+    const type = evaluate(expr.object, env).type;
     const obj = evaluate(expr.object, env) as ObjectVal;
     const ident = (expr.property as Identifier).symbol;
-    if (obj.type != "object") {
+    if (type !== "string" && type !== "object" && type !== "array") {
       throw `Expected type object found type ${obj.type} instead.`;
     }
     if (mutateObj != undefined) {

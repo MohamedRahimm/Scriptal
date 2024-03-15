@@ -6,7 +6,7 @@ export type NodeType =
   | "UnaryExpr"
   | "VarDeclaration"
   | "AssignmentExpr"
-  | "String"
+  | "StringLiteral"
   | "Null"
   | "Boolean"
   | "Property"
@@ -77,6 +77,21 @@ export interface ObjectLiteral extends Stmt {
   kind: "ObjectLiteral";
   properties: Property[];
 }
+export interface ArrayLiteral extends Stmt {
+  kind: "ArrayLiteral";
+  elements: Stmt[];
+  methods: Property[];
+}
+export interface StringLiteral extends Stmt {
+  kind: "StringLiteral";
+  value: string;
+  methods: Property[];
+}
+export interface Property extends Stmt {
+  kind: "Property";
+  key: string;
+  value?: Stmt;
+}
 
 export interface UnaryExpr extends Stmt {
   kind: "UnaryExpr";
@@ -94,11 +109,6 @@ export interface MemberExpr extends Stmt {
   object: Stmt;
   property: Stmt;
   computed: boolean;
-}
-export interface Property extends Stmt {
-  kind: "Property";
-  key: string;
-  value?: Stmt;
 }
 
 export interface Identifier extends Stmt {
@@ -121,23 +131,11 @@ export interface Unassigned extends Stmt {
   kind: "Unassigned";
   value: "unassigned";
 }
-
-export interface String extends Stmt {
-  kind: "String";
-  value: string;
+export interface TermStmt extends Stmt {
+  kind: "BreakStmt" | "ContStmt";
 }
 
-export interface BreakStmt extends Stmt {
-  kind: "BreakStmt";
-}
-export interface ContStmt extends Stmt {
-  kind: "ContStmt";
-}
 export interface ReturnStmt extends Stmt {
   kind: "ReturnStmt";
   value: Stmt;
-}
-export interface ArrayLiteral extends Stmt {
-  kind: "ArrayLiteral";
-  elements: Stmt[];
 }

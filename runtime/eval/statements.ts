@@ -57,7 +57,7 @@ export function evalIfStmt(expr: IfStmt, env: Environment): RuntimeVal {
   if (condition.value === true) {
     for (const stmt of expr.body) {
       result = evaluate(stmt, scope);
-      if (result.type === "return") return (result as ReturnVal).value;
+      if (result.type === "return") return (result as ReturnVal);
       if (result.type === "break") {
         break;
       } else if (result.type === "continue") {
@@ -67,7 +67,7 @@ export function evalIfStmt(expr: IfStmt, env: Environment): RuntimeVal {
   } else if (expr.elseExpr != undefined) {
     for (const stmt of expr.elseExpr) {
       result = evaluate(stmt, scope);
-      if (result.type === "return") return (result as ReturnVal).value;
+      if (result.type === "return") return (result as ReturnVal);
       if (result.type === "break") {
         break;
       } else if (result.type === "continue") {
@@ -96,7 +96,7 @@ export function evalForStmt(
       } else if (lastEvaled.type === "continue") {
         break;
       }
-      if (lastEvaled.type === "return") return (lastEvaled as ReturnVal).value;
+      if (lastEvaled.type === "return") return (lastEvaled as ReturnVal);
     }
     if (shouldBreak === true) break;
     evalAssignment(iteration, scope);
@@ -124,7 +124,7 @@ export function evalWhileStmt(
         shouldContinue = true;
         break;
       }
-      if (lastEvaled.type === "return") return (lastEvaled as ReturnVal).value;
+      if (lastEvaled.type === "return") return (lastEvaled as ReturnVal);
     }
     if (shouldBreak === true) break;
     if (shouldContinue === true) continue;

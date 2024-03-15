@@ -36,10 +36,6 @@ export interface BoolVal extends RuntimeVal {
   type: "boolean";
   value: boolean;
 }
-export interface StringVal extends RuntimeVal {
-  type: "string";
-  value: string;
-}
 
 export interface UnassignedVal extends RuntimeVal {
   type: "unassigned";
@@ -48,6 +44,16 @@ export interface UnassignedVal extends RuntimeVal {
 export interface ObjectVal extends RuntimeVal {
   type: "object";
   properties: Map<string, RuntimeVal>;
+}
+export interface StringVal extends RuntimeVal {
+  type: "string";
+  methods: Map<string, RuntimeVal>;
+  value: string;
+}
+export interface ArrayVal extends RuntimeVal {
+  type: "array";
+  methods: Map<string, RuntimeVal>;
+  elements: RuntimeVal[];
 }
 export interface FunctionVal extends RuntimeVal {
   type: "function";
@@ -76,8 +82,4 @@ export interface ContinueVal extends RuntimeVal {
 export interface ReturnVal extends RuntimeVal {
   type: "return";
   value: RuntimeVal;
-}
-export interface ArrayVal extends RuntimeVal {
-  type: "array";
-  elements: RuntimeVal[];
 }

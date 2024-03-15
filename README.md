@@ -109,7 +109,11 @@ print(x.lorem);
 
 Arrays are similar to javascript's native arrays:
 
-#### Array methods are currently unsupported
+#### Supported Methods
+
+- push
+- pop
+- shift
 
 ```rs
 let x = [1,2,true,unassigned];
@@ -125,8 +129,7 @@ Comments are created using the ` character
 
 ## Functions
 
-Functions return the last computed value or of null. Functions can be created
-with:
+Functions return the last computed value or null. Functions can be created with:
 
 ```rs
 function x(param1,param2){
@@ -161,7 +164,7 @@ For loops can be created with:
 for(let i =0;i<3;i+=1){
     if(i==0){
         break;
-    }
+    };
     print(i);
 };
 ```
@@ -191,7 +194,7 @@ Standard Operators:
 - `^`
 - `<=`
 - `>=`
-- `&&`
+- `&&` **Note values don't inherently have truthy or falsely values**
 - `||`
 - `==`
 - `!=`

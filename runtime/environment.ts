@@ -88,6 +88,34 @@ export function globalEnv() {
           return { type: "number", value } as NumberVal;
         }),
       ],
+      [
+        "max",
+        makeNativeFn((args) => {
+          let max = -Infinity;
+          for (let i = 0; i < args.length; i++) {
+            if (args[i].type !== "number") {
+              throw `expected type number but got ${args[i].type}`;
+            }
+            const curr = (args[i] as NumberVal).value;
+            max = curr > max ? curr : max;
+          }
+          return { type: "number", value: max } as NumberVal;
+        }),
+      ],
+      [
+        "min",
+        makeNativeFn((args) => {
+          let min = Infinity;
+          for (let i = 0; i < args.length; i++) {
+            if (args[i].type !== "number") {
+              throw `expected type number but got ${args[i].type}`;
+            }
+            const curr = (args[i] as NumberVal).value;
+            min = curr < min ? curr : min;
+          }
+          return { type: "number", value: min } as NumberVal;
+        }),
+      ],
     ]),
   } as ObjectVal, true);
   return env;

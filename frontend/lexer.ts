@@ -104,9 +104,10 @@ const KEYWORDS: Record<string, TokenType> = {
 export interface Token {
   value: string;
   type: TokenType;
+  line: number;
 }
-function makeToken(value = "", type: TokenType): Token {
-  return { value, type };
+function makeToken(value = "", type: TokenType, line: number): Token {
+  return { value, type, line };
 }
 //Checks if character's ASCII value is in the english alphabet or an underscore or digit
 function isValidIdentifier(str: string) {
@@ -126,6 +127,7 @@ function isSkippible(str: string) {
 }
 export function tokenize(src: string): Token[] {
   const tokens = new Array<Token>();
+  let line = 0;
   for (let i = 0; i < src.length; i++) {
     const oneCharTokens = src[i];
     const twoCharTokens = src[i] + src[i + 1];
@@ -133,8 +135,10 @@ export function tokenize(src: string): Token[] {
     const oneCharVal = TOKENMAP[oneCharTokens];
     const twoCharVal = TOKENMAP[twoCharTokens];
     const threeCharVal = TOKENMAP[threeCharTokens];
-    if (isSkippible(src[i])) continue;
-    else if (isInt(src[i])) {
+    if (src[i] === "\n") line++;
+    if (isSkippible(src[i])) {
+      continue;
+    } else if (isInt(src[i])) {
       let num = "";
       let hasDecimal = false;
       for (let j = i; j < src.length; j++) {
@@ -146,7 +150,7 @@ export function tokenize(src: string): Token[] {
         num += src[j];
       }
       i += num.length - 1;
-      tokens.push(makeToken(num, TokenType.Number));
+      tokens.push(makeToken(num, TokenType.Number, line));
     } else if (isValidIdentifier(src[i])) {
       let ident = "";
       for (let j = i; j < src.length; j++) {
@@ -158,24 +162,24 @@ export function tokenize(src: string): Token[] {
       i += ident.length - 1;
       const reserved = KEYWORDS[ident];
       //Checks if identifier is a reserved keyword
-      if (reserved != undefined) tokens.push(makeToken(ident, reserved));
+      if (reserved != undefined) tokens.push(makeToken(ident, reserved, line));
       // Unreconized identifier means it is a user defined symbol.
-      else tokens.push(makeToken(ident, TokenType.Identifier));
+      else tokens.push(makeToken(ident, TokenType.Identifier, line));
     } else if (threeCharVal) {
       if (threeCharVal === TokenType.AssignmentOperator) {
         const prev = tokens[tokens.length - 1];
-        tokens.push(makeToken("=", TokenType.Equals));
+        tokens.push(makeToken("=", TokenType.Equals, line));
         tokens.push(prev);
-        tokens.push(makeToken(twoCharTokens, twoCharVal));
-      } else tokens.push(makeToken(threeCharTokens, threeCharVal));
+        tokens.push(makeToken(twoCharTokens, twoCharVal, line));
+      } else tokens.push(makeToken(threeCharTokens, threeCharVal, line));
       i += 2;
     } else if (twoCharVal) {
       if (twoCharVal === TokenType.AssignmentOperator) {
         const prev = tokens[tokens.length - 1];
-        tokens.push(makeToken("=", TokenType.Equals));
+        tokens.push(makeToken("=", TokenType.Equals, line));
         tokens.push(prev);
-        tokens.push(makeToken(oneCharTokens, oneCharVal));
-      } else tokens.push(makeToken(twoCharTokens, twoCharVal));
+        tokens.push(makeToken(oneCharTokens, oneCharVal, line));
+      } else tokens.push(makeToken(twoCharTokens, twoCharVal, line));
       i++;
     } else if (oneCharVal) {
       if (oneCharVal === TokenType.Comment) {
@@ -185,20 +189,20 @@ export function tokenize(src: string): Token[] {
           throw `Missing End of Comment`;
         }
       } else if (oneCharVal === TokenType.QuotationMark) {
-        tokens.push(makeToken(oneCharTokens, oneCharVal));
+        tokens.push(makeToken(oneCharTokens, oneCharVal, line));
         let str = "";
         i++;
         while (TOKENMAP[src[i]] !== TokenType.QuotationMark && i < src.length) {
           str += src[i];
           i++;
         }
-        tokens.push(makeToken(str, TokenType.Identifier));
-        tokens.push(makeToken(src[i], TOKENMAP[src[i]]));
-      } else tokens.push(makeToken(oneCharTokens, oneCharVal));
+        tokens.push(makeToken(str, TokenType.Identifier, line));
+        tokens.push(makeToken(src[i], TOKENMAP[src[i]], line));
+      } else tokens.push(makeToken(oneCharTokens, oneCharVal, line));
     } else {
       throw `Lexing error unknown token, ${oneCharTokens} `;
     }
   }
-  tokens.push(makeToken("EndOfFile", TokenType.EOF));
+  tokens.push(makeToken("EndOfFile", TokenType.EOF, line));
   return tokens;
 }

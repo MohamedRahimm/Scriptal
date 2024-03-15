@@ -3,9 +3,7 @@ import {
   AssignmentExpr,
   BinaryExpr,
   Boolean,
-  BreakStmt,
   CallExpr,
-  ContStmt,
   ForStmt,
   FunctionDeclaration,
   Identifier,
@@ -18,7 +16,8 @@ import {
   Property,
   ReturnStmt,
   Stmt,
-  String,
+  StringLiteral,
+  TermStmt,
   UnaryExpr,
   Unassigned,
   VarDeclaration,
@@ -54,7 +53,7 @@ export class Parser {
   private expect(expectedType: TokenType, errorMsg: string) {
     const prev = this.tokens[this.idx++];
     if (prev.type !== expectedType) {
-      throw errorMsg;
+      throw `${errorMsg} in line ${prev.line}`;
     }
     return prev as Token;
   }
@@ -106,6 +105,7 @@ export class Parser {
     return declaration;
   }
   private parseFunctionDec(inFunction = false, inLoop = false): Stmt {
+    //allows functions in objects
     if (this.at().type !== TokenType.Function) {
       return this.parseAssignmentExpr(inFunction, inLoop);
     }
@@ -279,7 +279,7 @@ export class Parser {
       if (this.at().type === TokenType.Identifier) {
         key = this.expect(TokenType.Identifier, "Invalid key for object").value;
       } else if (this.at().type === TokenType.QuotationMark) {
-        key = (this.parsePrimaryExpr() as String).value;
+        key = (this.parseStrOrArrLiteral() as StringLiteral).value;
       } else "Invalid key for object";
       // allows {key,...}
       if (this.at().type == TokenType.Comma) {
@@ -401,7 +401,7 @@ export class Parser {
     return args;
   }
   private parseMemberExpr(inFunction = false, inLoop = false): Stmt {
-    let object = this.parsePrimaryExpr(inFunction, inLoop);
+    let object = this.parseStrOrArrLiteral(inFunction, inLoop);
     while (
       this.at().type === TokenType.Dot ||
       this.at().type === TokenType.OpenBracket
@@ -427,24 +427,55 @@ export class Parser {
     }
     return object;
   }
+  private parseStrOrArrLiteral(inFunction = false, inLoop = false): Stmt {
+    if (this.at().type === TokenType.QuotationMark) {
+      let value = "";
+      this.eat();
+      while (
+        this.at().type !== TokenType.EOF &&
+        this.at().type !== TokenType.QuotationMark
+      ) {
+        value += this.eat().value;
+      }
+      this.expect(TokenType.QuotationMark, "Unclosed Quote");
+      return { kind: "StringLiteral", value } as StringLiteral;
+    } else if (this.at().type === TokenType.OpenBracket) {
+      const props = [];
+      this.eat();
+      while (
+        this.at().type !== TokenType.EOF &&
+        this.at().type !== TokenType.CloseBracket
+      ) {
+        if (this.at().type == TokenType.Comma) {
+          this.eat();
+          props.push(this.parseAssignmentExpr(inFunction, inLoop));
+          continue;
+        }
+        props.push(this.parseAssignmentExpr(inFunction, inLoop));
+      }
+      this.expect(TokenType.CloseBracket, "Expected closing bracket");
+      return { kind: "ArrayLiteral", elements: props } as ArrayLiteral;
+    }
+    return this.parsePrimaryExpr(inFunction, inLoop);
+  }
   private parsePrimaryExpr(inFunction = false, inLoop = false): Stmt {
     const token = this.at();
     switch (token.type) {
       case TokenType.Break:
-        this.eat();
-        if (inLoop === false) throw `Not in loop`;
-        return {
-          kind: "BreakStmt",
-        } as BreakStmt;
       case TokenType.Continue:
-        this.eat();
-        if (inLoop === false) throw `Not in loop`;
+        if (inLoop === false) {
+          throw `${token.value} statement is unallowed outside of loops`;
+        }
         return {
-          kind: "ContStmt",
-        } as ContStmt;
+          kind: this.eat().type === TokenType.Continue
+            ? "ContStmt"
+            : "BreakStmt",
+        } as TermStmt;
       case TokenType.Return:
         this.eat();
-        if (inFunction === false) throw `Not in function`;
+        if (inFunction === false) {
+          throw `${token.value} statement is unallowed outside of functions`;
+        }
         return {
           kind: "ReturnStmt",
           value: this.parseAssignmentExpr(),
@@ -475,41 +506,14 @@ export class Parser {
           kind: "Unassigned",
           value: this.eat().value,
         } as Unassigned;
-      case TokenType.QuotationMark: {
-        let value = "";
-        this.eat();
-        while (
-          this.at().type !== TokenType.EOF &&
-          this.at().type !== TokenType.QuotationMark
-        ) {
-          value += this.eat().value;
-        }
-        this.expect(TokenType.QuotationMark, "Unclosed Quote");
-        return { kind: "String", value } as String;
-      }
+
       case TokenType.OpenParen: {
         this.eat();
         const value = this.parseAssignmentExpr(inFunction);
         this.expect(TokenType.CloseParen, "Unclosed Parenthesis");
         return value;
       }
-      case TokenType.OpenBracket: {
-        const props = [];
-        this.eat();
-        while (
-          this.at().type !== TokenType.EOF &&
-          this.at().type !== TokenType.CloseBracket
-        ) {
-          if (this.at().type == TokenType.Comma) {
-            this.eat();
-            props.push(this.parseAssignmentExpr(inFunction));
-            continue;
-          }
-          props.push(this.parseAssignmentExpr(inFunction));
-        }
-        this.expect(TokenType.CloseBracket, "Expected closing bracket");
-        return { kind: "ArrayLiteral", elements: props } as ArrayLiteral;
-      }
+
       default:
         throw `Unexpected token ${JSON.stringify(token)}`;
     }

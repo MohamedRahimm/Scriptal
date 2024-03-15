@@ -5,7 +5,6 @@ import {
   NullVal,
   NumberVal,
   RuntimeVal,
-  StringVal,
   UnassignedVal,
 } from "./values.ts";
 import {
@@ -25,7 +24,7 @@ import {
   Program,
   ReturnStmt,
   Stmt,
-  String,
+  StringLiteral,
   UnaryExpr,
   Unassigned,
   VarDeclaration,
@@ -40,6 +39,7 @@ import {
   evalIdentifier,
   evalMemberExpr,
   evalObjectExpr,
+  evalStringExpr,
   evalUnaryExpr,
 } from "./eval/expressions.ts";
 import {
@@ -65,11 +65,7 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       } as BoolVal;
     case "Null":
       return { value: ((astNode as Null).value), type: "null" } as NullVal;
-    case "String":
-      return {
-        value: ((astNode as String).value),
-        type: "string",
-      } as StringVal;
+
     case "Unassigned":
       return {
         value: ((astNode as Unassigned).value),
@@ -83,6 +79,10 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return evalIdentifier(astNode as Identifier, env);
     case "ObjectLiteral":
       return evalObjectExpr(astNode as ObjectLiteral, env);
+    case "StringLiteral":
+      return evalStringExpr(astNode as StringLiteral, env);
+    case "ArrayLiteral":
+      return evalArrayExpr(astNode as ArrayLiteral, env);
     case "BinaryExpr":
       return evalBinaryExpr(astNode as BinaryExpr, env);
     case "UnaryExpr":
@@ -107,8 +107,7 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return evalAssignment(astNode as AssignmentExpr, env);
     case "ReturnStmt":
       return evalReturnStmt(astNode as ReturnStmt, env);
-    case "ArrayLiteral":
-      return evalArrayExpr(astNode as ArrayLiteral, env);
+
     default:
       console.log(astNode);
       throw `ASTNode not implemented yet`;
