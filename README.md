@@ -131,6 +131,9 @@ Comments are created using the ` character
 
 Functions return the last computed value or null. Functions can be created with:
 
+**Note: Recursive functions are not supported as there is no handling for the
+call stack.**
+
 ```rs
 function x(param1,param2){
     return param1 == param2;
