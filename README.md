@@ -7,7 +7,7 @@ A programming language created in Typescript
 To build the content of this repository, run `npm i`
 
 ```rs
-git clone https://github.com/MohamedRahimm/custom-lang.git
+git clone https://github.com/MohamedRahimm/Scriptal.git
 npm install
 ```
 
