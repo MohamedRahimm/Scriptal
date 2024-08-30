@@ -339,18 +339,28 @@ export function evalMemberExpr(
   } // handles obj.member
   else {
     const type = evaluate(expr.object, env).type;
-    const obj = evaluate(expr.object, env) as ObjectVal;
+    const obj = evaluate(expr.object, env);
     const ident = (expr.property as Identifier).symbol;
     if (type !== "string" && type !== "object" && type !== "array") {
       throw `Expected type object found type ${obj.type} instead.`;
     }
-    if (mutateObj != undefined) {
-      obj.properties.set(ident, mutateObj);
+    if (type === "object") {
+      const object = obj as ObjectVal;
+      if (object.properties.has(ident)) {
+        return object.properties.get(ident) as RuntimeVal;
+      } else if (!object.properties.has(ident)) {
+        throw `Cannot set properties of unassinged`;
+      }
+      if (mutateObj != undefined) {
+        object.properties.set(ident, mutateObj);
+      }
+    } // ArrayVal and StringVal both contain "methods"
+    else {
+      const object = obj as ArrayVal;
+      if (object.methods.has(ident)) {
+        return object.methods.get(ident) as RuntimeVal;
+      } else throw `Method ${ident} does not exist`;
     }
-    if (obj.properties.has(ident)) {
-      return obj.properties.get(ident) as RuntimeVal;
-    }
-    throw `Cannot set properties of unassinged`;
   }
   return { type: "unassigned", value: "unassigned" } as UnassignedVal;
 }
