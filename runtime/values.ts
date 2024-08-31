@@ -17,6 +17,8 @@ export type ValueType =
   | "array";
 export interface RuntimeVal {
   type: ValueType;
+  // deno-lint-ignore no-explicit-any
+  value?: any;
 }
 export interface NullVal extends RuntimeVal {
   type: "null";

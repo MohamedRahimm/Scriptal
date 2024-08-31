@@ -65,7 +65,6 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       } as BoolVal;
     case "Null":
       return { value: ((astNode as Null).value), type: "null" } as NullVal;
-
     case "Unassigned":
       return {
         value: ((astNode as Unassigned).value),
