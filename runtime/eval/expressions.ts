@@ -346,13 +346,13 @@ export function evalMemberExpr(
     }
     if (type === "object") {
       const object = obj as ObjectVal;
-      if (object.properties.has(ident)) {
-        return object.properties.get(ident) as RuntimeVal;
-      } else if (!object.properties.has(ident)) {
-        throw `Cannot set properties of unassinged`;
-      }
       if (mutateObj != undefined) {
         object.properties.set(ident, mutateObj);
+      }
+      if (object.properties.has(ident)) {
+        return object.properties.get(ident) as RuntimeVal;
+      } else {
+        throw `Cannot set properties of unassinged`;
       }
     } // ArrayVal and StringVal both contain "methods"
     else {

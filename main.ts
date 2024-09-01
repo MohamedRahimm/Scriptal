@@ -11,10 +11,10 @@ async function run(filename: string) {
   const env = globalEnv();
   const input = await Deno.readTextFile(filename);
   const program = parser.produceAst(input);
-  // console.log(program);
   const result = evaluate(program, env);
   console.log(result);
 }
+
 function repl() {
   const parser = new Parser();
   const env = globalEnv();
@@ -23,7 +23,6 @@ function repl() {
     const input = prompt("> ");
     if (!input || input === "exit" || input === "EXIT") break;
     const program = parser.produceAst(input);
-    // console.log(program);
     const result = evaluate(program, env);
     console.log(result);
   }
