@@ -1,0 +1,33 @@
+form {
+    /* min-width: 450px; */
+    display: grid;
+}
+
+textarea {
+    min-height: 250px;
+    display: block;
+    resize: none;
+}
+
+#code-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-flow: column;
+}
+
+/* code { width: 100%;
+    display: block;
+} */
+
+pre {
+    white-space: normal;
+}
+
+code {
+    display: inline-block;
+    white-space: normal;
+    max-width: 100%;
+    word-break: break-all;
+    word-wrap: break-word;
+
+}

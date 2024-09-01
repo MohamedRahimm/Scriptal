@@ -1,3 +1,11 @@
-{"tasks": {
+{
+  "tasks": {
     "start": "deno run -A main.ts"
-  }}
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.window",
+      "DOM"
+    ]
+  }
+}

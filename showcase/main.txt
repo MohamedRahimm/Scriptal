@@ -78,4 +78,3 @@ let linkedListEx = {
 };
 linkedListEx.next.next.next ={val: -4,next: linkedListEx.next};
 print("HASCYCLE", hasCycle(linkedListEx));
-
