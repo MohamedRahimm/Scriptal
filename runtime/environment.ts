@@ -135,7 +135,7 @@ export default class Environment {
     constant: boolean,
   ): RuntimeVal {
     if (this.variables.has(varName)) {
-      throw `Cannot declare variable ${varName}.Already defined`;
+      throw `Cannot declare variable ${varName}. Already defined`;
     }
     this.variables.set(varName, value);
     if (constant) this.constants.add(varName);
@@ -143,7 +143,9 @@ export default class Environment {
   }
   public assignVar(varName: string, value: RuntimeVal): RuntimeVal {
     const env = this.resolve(varName);
-    if (env.constants.has(varName)) throw `Cannot reassign cuz its constant`;
+    if (env.constants.has(varName)) {
+      throw `Cannot reassign variable ${varName} because it is constant`;
+    }
     env.variables.set(varName, value);
     return value;
   }
