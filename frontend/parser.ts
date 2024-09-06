@@ -23,7 +23,8 @@ import {
   VarDeclaration,
   WhileStmt,
 } from "./ast.ts";
-import { Token, tokenize, TokenType } from "./lexer.ts";
+import { tokenize } from "./lexer.ts";
+import { Token, TokenType } from "./tokenDefinitions.ts";
 
 /*
 Recursive descent parser
@@ -515,7 +516,7 @@ export class Parser {
       }
 
       default:
-        throw `Unexpected token ${JSON.stringify(token)}`;
+        throw `Unexpected token ${JSON.stringify(token.value)}`;
     }
   }
   produceAst(sourceCode: string): Program {

@@ -106,9 +106,7 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return evalAssignment(astNode as AssignmentExpr, env);
     case "ReturnStmt":
       return evalReturnStmt(astNode as ReturnStmt, env);
-
     default:
-      console.log(astNode);
-      throw `ASTNode not implemented yet`;
+      throw `ASTNode ${astNode} not implemented yet`;
   }
 }

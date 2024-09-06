@@ -1,111 +1,4 @@
-export enum TokenType {
-  //Primative types
-  Number,
-  Null,
-  Boolean,
-  Identifier,
-
-  //Operators
-  Equals,
-  OpenParen,
-  CloseParen,
-  Comma,
-  OpenBracket,
-  CloseBracket,
-  Dot,
-  AssignmentOperator,
-  BinaryOperator,
-  Equality,
-  Inequality,
-  LessThan,
-  GreaterThan,
-  LessOrEqual,
-  GreaterOrEqual,
-
-  //Var Types
-  Const,
-  Let,
-  Function,
-  Unassigned,
-
-  //Conditionals/Loops
-  If,
-  Else,
-  While,
-  For,
-
-  //Miscellaneous
-  Colon,
-  OpenBrace,
-  CloseBrace,
-  QuotationMark,
-  Comment,
-  Return,
-  Continue,
-  Break,
-
-  // End of file/statement
-  Semicolon,
-  EOF,
-}
-const TOKENMAP: Record<string, TokenType> = {
-  '"': TokenType.QuotationMark,
-  "(": TokenType.OpenParen,
-  ")": TokenType.CloseParen,
-  "{": TokenType.OpenBrace,
-  "}": TokenType.CloseBrace,
-  "[": TokenType.OpenBracket,
-  "]": TokenType.CloseBracket,
-  ":": TokenType.Colon,
-  ",": TokenType.Comma,
-  ".": TokenType.Dot,
-  "=": TokenType.Equals,
-  ";": TokenType.Semicolon,
-  "+": TokenType.BinaryOperator,
-  "-": TokenType.BinaryOperator,
-  "`": TokenType.Comment,
-  "<": TokenType.LessThan,
-  ">": TokenType.GreaterThan,
-  "^": TokenType.BinaryOperator,
-  "<=": TokenType.LessOrEqual,
-  ">=": TokenType.GreaterOrEqual,
-  "&&": TokenType.BinaryOperator,
-  "||": TokenType.BinaryOperator,
-  "==": TokenType.Equality,
-  "!=": TokenType.Inequality,
-  "/": TokenType.BinaryOperator,
-  "//": TokenType.BinaryOperator,
-  "*": TokenType.BinaryOperator,
-  "%": TokenType.BinaryOperator,
-  "+=": TokenType.AssignmentOperator,
-  "-=": TokenType.AssignmentOperator,
-  "*=": TokenType.AssignmentOperator,
-  "/=": TokenType.AssignmentOperator,
-  "%=": TokenType.AssignmentOperator,
-  "^=": TokenType.AssignmentOperator,
-  "//=": TokenType.AssignmentOperator,
-};
-const KEYWORDS: Record<string, TokenType> = {
-  "null": TokenType.Null,
-  "true": TokenType.Boolean,
-  "false": TokenType.Boolean,
-  "const": TokenType.Const,
-  "let": TokenType.Let,
-  "unassigned": TokenType.Unassigned,
-  "function": TokenType.Function,
-  "if": TokenType.If,
-  "else": TokenType.Else,
-  "for": TokenType.For,
-  "while": TokenType.While,
-  "return": TokenType.Return,
-  "continue": TokenType.Continue,
-  "break": TokenType.Break,
-};
-export interface Token {
-  value: string;
-  type: TokenType;
-  line: number;
-}
+import { KEYWORDS, Token, TOKENMAP, TokenType } from "./tokenDefinitions.ts";
 function makeToken(value = "", type: TokenType, line: number): Token {
   return { value, type, line };
 }
@@ -163,7 +56,7 @@ export function tokenize(src: string): Token[] {
       const reserved = KEYWORDS[ident];
       //Checks if identifier is a reserved keyword
       if (reserved != undefined) tokens.push(makeToken(ident, reserved, line));
-      // Unreconized identifier means it is a user defined symbol.
+      // Unrecognized identifier means it is a user defined symbol.
       else tokens.push(makeToken(ident, TokenType.Identifier, line));
     } else if (threeCharVal) {
       if (threeCharVal === TokenType.AssignmentOperator) {
