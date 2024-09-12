@@ -12,7 +12,6 @@ newConsole.log = function (...args: any[]) {
   newConsole.defaultLog.apply(console, args);
   newConsole.history.push(arguments[0]);
 };
-console.log();
 newConsole.clearHistory = function () {
   newConsole.history.length = 0;
 };

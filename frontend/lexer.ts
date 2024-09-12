@@ -15,8 +15,9 @@ function isValidIdentifier(str: string) {
 function isInt(str: string) {
   return str.charCodeAt(0) >= 48 && str.charCodeAt(0) <= 57;
 }
-function isSkippible(str: string) {
-  return str === " " || str === "\n" || str === `\t` || str === "\r";
+function isSkippable(str: string) {
+  return str === " " || str === "\n" || str === `\t` || str === "\r" ||
+    str.charCodeAt(0) === 160;
 }
 export function tokenize(src: string): Token[] {
   const tokens = new Array<Token>();
@@ -29,7 +30,7 @@ export function tokenize(src: string): Token[] {
     const twoCharVal = TOKENMAP[twoCharTokens];
     const threeCharVal = TOKENMAP[threeCharTokens];
     if (src[i] === "\n") line++;
-    if (isSkippible(src[i])) {
+    if (isSkippable(src[i])) {
       continue;
     } else if (isInt(src[i])) {
       let num = "";

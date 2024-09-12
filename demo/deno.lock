@@ -1,0 +1,355 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "npm:monaco-editor@^0.51.0": "npm:monaco-editor@0.51.0",
+      "npm:pretty-print-json@^3.0.2": "npm:pretty-print-json@3.0.2",
+      "npm:typescript@^5.5.3": "npm:typescript@5.5.4",
+      "npm:vite@^5.4.1": "npm:vite@5.4.2"
+    },
+    "npm": {
+      "@esbuild/aix-ppc64@0.21.5": {
+        "integrity": "sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==",
+        "dependencies": {}
+      },
+      "@esbuild/android-arm64@0.21.5": {
+        "integrity": "sha512-c0uX9VAUBQ7dTDCjq+wdyGLowMdtR/GoC2U5IYk/7D1H1JYC0qseD7+11iMP2mRLN9RcCMRcjC4YMclCzGwS/A==",
+        "dependencies": {}
+      },
+      "@esbuild/android-arm@0.21.5": {
+        "integrity": "sha512-vCPvzSjpPHEi1siZdlvAlsPxXl7WbOVUBBAowWug4rJHb68Ox8KualB+1ocNvT5fjv6wpkX6o/iEpbDrf68zcg==",
+        "dependencies": {}
+      },
+      "@esbuild/android-x64@0.21.5": {
+        "integrity": "sha512-D7aPRUUNHRBwHxzxRvp856rjUHRFW1SdQATKXH2hqA0kAZb1hKmi02OpYRacl0TxIGz/ZmXWlbZgjwWYaCakTA==",
+        "dependencies": {}
+      },
+      "@esbuild/darwin-arm64@0.21.5": {
+        "integrity": "sha512-DwqXqZyuk5AiWWf3UfLiRDJ5EDd49zg6O9wclZ7kUMv2WRFr4HKjXp/5t8JZ11QbQfUS6/cRCKGwYhtNAY88kQ==",
+        "dependencies": {}
+      },
+      "@esbuild/darwin-x64@0.21.5": {
+        "integrity": "sha512-se/JjF8NlmKVG4kNIuyWMV/22ZaerB+qaSi5MdrXtd6R08kvs2qCN4C09miupktDitvh8jRFflwGFBQcxZRjbw==",
+        "dependencies": {}
+      },
+      "@esbuild/freebsd-arm64@0.21.5": {
+        "integrity": "sha512-5JcRxxRDUJLX8JXp/wcBCy3pENnCgBR9bN6JsY4OmhfUtIHe3ZW0mawA7+RDAcMLrMIZaf03NlQiX9DGyB8h4g==",
+        "dependencies": {}
+      },
+      "@esbuild/freebsd-x64@0.21.5": {
+        "integrity": "sha512-J95kNBj1zkbMXtHVH29bBriQygMXqoVQOQYA+ISs0/2l3T9/kj42ow2mpqerRBxDJnmkUDCaQT/dfNXWX/ZZCQ==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-arm64@0.21.5": {
+        "integrity": "sha512-ibKvmyYzKsBeX8d8I7MH/TMfWDXBF3db4qM6sy+7re0YXya+K1cem3on9XgdT2EQGMu4hQyZhan7TeQ8XkGp4Q==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-arm@0.21.5": {
+        "integrity": "sha512-bPb5AHZtbeNGjCKVZ9UGqGwo8EUu4cLq68E95A53KlxAPRmUyYv2D6F0uUI65XisGOL1hBP5mTronbgo+0bFcA==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-ia32@0.21.5": {
+        "integrity": "sha512-YvjXDqLRqPDl2dvRODYmmhz4rPeVKYvppfGYKSNGdyZkA01046pLWyRKKI3ax8fbJoK5QbxblURkwK/MWY18Tg==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-loong64@0.21.5": {
+        "integrity": "sha512-uHf1BmMG8qEvzdrzAqg2SIG/02+4/DHB6a9Kbya0XDvwDEKCoC8ZRWI5JJvNdUjtciBGFQ5PuBlpEOXQj+JQSg==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-mips64el@0.21.5": {
+        "integrity": "sha512-IajOmO+KJK23bj52dFSNCMsz1QP1DqM6cwLUv3W1QwyxkyIWecfafnI555fvSGqEKwjMXVLokcV5ygHW5b3Jbg==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-ppc64@0.21.5": {
+        "integrity": "sha512-1hHV/Z4OEfMwpLO8rp7CvlhBDnjsC3CttJXIhBi+5Aj5r+MBvy4egg7wCbe//hSsT+RvDAG7s81tAvpL2XAE4w==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-riscv64@0.21.5": {
+        "integrity": "sha512-2HdXDMd9GMgTGrPWnJzP2ALSokE/0O5HhTUvWIbD3YdjME8JwvSCnNGBnTThKGEB91OZhzrJ4qIIxk/SBmyDDA==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-s390x@0.21.5": {
+        "integrity": "sha512-zus5sxzqBJD3eXxwvjN1yQkRepANgxE9lgOW2qLnmr8ikMTphkjgXu1HR01K4FJg8h1kEEDAqDcZQtbrRnB41A==",
+        "dependencies": {}
+      },
+      "@esbuild/linux-x64@0.21.5": {
+        "integrity": "sha512-1rYdTpyv03iycF1+BhzrzQJCdOuAOtaqHTWJZCWvijKD2N5Xu0TtVC8/+1faWqcP9iBCWOmjmhoH94dH82BxPQ==",
+        "dependencies": {}
+      },
+      "@esbuild/netbsd-x64@0.21.5": {
+        "integrity": "sha512-Woi2MXzXjMULccIwMnLciyZH4nCIMpWQAs049KEeMvOcNADVxo0UBIQPfSmxB3CWKedngg7sWZdLvLczpe0tLg==",
+        "dependencies": {}
+      },
+      "@esbuild/openbsd-x64@0.21.5": {
+        "integrity": "sha512-HLNNw99xsvx12lFBUwoT8EVCsSvRNDVxNpjZ7bPn947b8gJPzeHWyNVhFsaerc0n3TsbOINvRP2byTZ5LKezow==",
+        "dependencies": {}
+      },
+      "@esbuild/sunos-x64@0.21.5": {
+        "integrity": "sha512-6+gjmFpfy0BHU5Tpptkuh8+uw3mnrvgs+dSPQXQOv3ekbordwnzTVEb4qnIvQcYXq6gzkyTnoZ9dZG+D4garKg==",
+        "dependencies": {}
+      },
+      "@esbuild/win32-arm64@0.21.5": {
+        "integrity": "sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==",
+        "dependencies": {}
+      },
+      "@esbuild/win32-ia32@0.21.5": {
+        "integrity": "sha512-SWXFF1CL2RVNMaVs+BBClwtfZSvDgtL//G/smwAc5oVK/UPu2Gu9tIaRgFmYFFKrmg3SyAjSrElf0TiJ1v8fYA==",
+        "dependencies": {}
+      },
+      "@esbuild/win32-x64@0.21.5": {
+        "integrity": "sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-android-arm-eabi@4.21.1": {
+        "integrity": "sha512-2thheikVEuU7ZxFXubPDOtspKn1x0yqaYQwvALVtEcvFhMifPADBrgRPyHV0TF3b+9BgvgjgagVyvA/UqPZHmg==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-android-arm64@4.21.1": {
+        "integrity": "sha512-t1lLYn4V9WgnIFHXy1d2Di/7gyzBWS8G5pQSXdZqfrdCGTwi1VasRMSS81DTYb+avDs/Zz4A6dzERki5oRYz1g==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-darwin-arm64@4.21.1": {
+        "integrity": "sha512-AH/wNWSEEHvs6t4iJ3RANxW5ZCK3fUnmf0gyMxWCesY1AlUj8jY7GC+rQE4wd3gwmZ9XDOpL0kcFnCjtN7FXlA==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-darwin-x64@4.21.1": {
+        "integrity": "sha512-dO0BIz/+5ZdkLZrVgQrDdW7m2RkrLwYTh2YMFG9IpBtlC1x1NPNSXkfczhZieOlOLEqgXOFH3wYHB7PmBtf+Bg==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-arm-gnueabihf@4.21.1": {
+        "integrity": "sha512-sWWgdQ1fq+XKrlda8PsMCfut8caFwZBmhYeoehJ05FdI0YZXk6ZyUjWLrIgbR/VgiGycrFKMMgp7eJ69HOF2pQ==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-arm-musleabihf@4.21.1": {
+        "integrity": "sha512-9OIiSuj5EsYQlmwhmFRA0LRO0dRRjdCVZA3hnmZe1rEwRk11Jy3ECGGq3a7RrVEZ0/pCsYWx8jG3IvcrJ6RCew==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-arm64-gnu@4.21.1": {
+        "integrity": "sha512-0kuAkRK4MeIUbzQYu63NrJmfoUVicajoRAL1bpwdYIYRcs57iyIV9NLcuyDyDXE2GiZCL4uhKSYAnyWpjZkWow==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-arm64-musl@4.21.1": {
+        "integrity": "sha512-/6dYC9fZtfEY0vozpc5bx1RP4VrtEOhNQGb0HwvYNwXD1BBbwQ5cKIbUVVU7G2d5WRE90NfB922elN8ASXAJEA==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-powerpc64le-gnu@4.21.1": {
+        "integrity": "sha512-ltUWy+sHeAh3YZ91NUsV4Xg3uBXAlscQe8ZOXRCVAKLsivGuJsrkawYPUEyCV3DYa9urgJugMLn8Z3Z/6CeyRQ==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-riscv64-gnu@4.21.1": {
+        "integrity": "sha512-BggMndzI7Tlv4/abrgLwa/dxNEMn2gC61DCLrTzw8LkpSKel4o+O+gtjbnkevZ18SKkeN3ihRGPuBxjaetWzWg==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-s390x-gnu@4.21.1": {
+        "integrity": "sha512-z/9rtlGd/OMv+gb1mNSjElasMf9yXusAxnRDrBaYB+eS1shFm6/4/xDH1SAISO5729fFKUkJ88TkGPRUh8WSAA==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-x64-gnu@4.21.1": {
+        "integrity": "sha512-kXQVcWqDcDKw0S2E0TmhlTLlUgAmMVqPrJZR+KpH/1ZaZhLSl23GZpQVmawBQGVhyP5WXIsIQ/zqbDBBYmxm5w==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-linux-x64-musl@4.21.1": {
+        "integrity": "sha512-CbFv/WMQsSdl+bpX6rVbzR4kAjSSBuDgCqb1l4J68UYsQNalz5wOqLGYj4ZI0thGpyX5kc+LLZ9CL+kpqDovZA==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-win32-arm64-msvc@4.21.1": {
+        "integrity": "sha512-3Q3brDgA86gHXWHklrwdREKIrIbxC0ZgU8lwpj0eEKGBQH+31uPqr0P2v11pn0tSIxHvcdOWxa4j+YvLNx1i6g==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-win32-ia32-msvc@4.21.1": {
+        "integrity": "sha512-tNg+jJcKR3Uwe4L0/wY3Ro0H+u3nrb04+tcq1GSYzBEmKLeOQF2emk1whxlzNqb6MMrQ2JOcQEpuuiPLyRcSIw==",
+        "dependencies": {}
+      },
+      "@rollup/rollup-win32-x64-msvc@4.21.1": {
+        "integrity": "sha512-xGiIH95H1zU7naUyTKEyOA/I0aexNMUdO9qRv0bLKN3qu25bBdrxZHqA3PTJ24YNN/GdMzG4xkDcd/GvjuhfLg==",
+        "dependencies": {}
+      },
+      "@types/estree@1.0.5": {
+        "integrity": "sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==",
+        "dependencies": {}
+      },
+      "esbuild@0.21.5": {
+        "integrity": "sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==",
+        "dependencies": {
+          "@esbuild/aix-ppc64": "@esbuild/aix-ppc64@0.21.5",
+          "@esbuild/android-arm": "@esbuild/android-arm@0.21.5",
+          "@esbuild/android-arm64": "@esbuild/android-arm64@0.21.5",
+          "@esbuild/android-x64": "@esbuild/android-x64@0.21.5",
+          "@esbuild/darwin-arm64": "@esbuild/darwin-arm64@0.21.5",
+          "@esbuild/darwin-x64": "@esbuild/darwin-x64@0.21.5",
+          "@esbuild/freebsd-arm64": "@esbuild/freebsd-arm64@0.21.5",
+          "@esbuild/freebsd-x64": "@esbuild/freebsd-x64@0.21.5",
+          "@esbuild/linux-arm": "@esbuild/linux-arm@0.21.5",
+          "@esbuild/linux-arm64": "@esbuild/linux-arm64@0.21.5",
+          "@esbuild/linux-ia32": "@esbuild/linux-ia32@0.21.5",
+          "@esbuild/linux-loong64": "@esbuild/linux-loong64@0.21.5",
+          "@esbuild/linux-mips64el": "@esbuild/linux-mips64el@0.21.5",
+          "@esbuild/linux-ppc64": "@esbuild/linux-ppc64@0.21.5",
+          "@esbuild/linux-riscv64": "@esbuild/linux-riscv64@0.21.5",
+          "@esbuild/linux-s390x": "@esbuild/linux-s390x@0.21.5",
+          "@esbuild/linux-x64": "@esbuild/linux-x64@0.21.5",
+          "@esbuild/netbsd-x64": "@esbuild/netbsd-x64@0.21.5",
+          "@esbuild/openbsd-x64": "@esbuild/openbsd-x64@0.21.5",
+          "@esbuild/sunos-x64": "@esbuild/sunos-x64@0.21.5",
+          "@esbuild/win32-arm64": "@esbuild/win32-arm64@0.21.5",
+          "@esbuild/win32-ia32": "@esbuild/win32-ia32@0.21.5",
+          "@esbuild/win32-x64": "@esbuild/win32-x64@0.21.5"
+        }
+      },
+      "fsevents@2.3.3": {
+        "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
+        "dependencies": {}
+      },
+      "monaco-editor@0.51.0": {
+        "integrity": "sha512-xaGwVV1fq343cM7aOYB6lVE4Ugf0UyimdD/x5PWcWBMKENwectaEu77FAN7c5sFiyumqeJdX1RPTh1ocioyDjw==",
+        "dependencies": {}
+      },
+      "nanoid@3.3.7": {
+        "integrity": "sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==",
+        "dependencies": {}
+      },
+      "picocolors@1.0.1": {
+        "integrity": "sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==",
+        "dependencies": {}
+      },
+      "postcss@8.4.41": {
+        "integrity": "sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==",
+        "dependencies": {
+          "nanoid": "nanoid@3.3.7",
+          "picocolors": "picocolors@1.0.1",
+          "source-map-js": "source-map-js@1.2.0"
+        }
+      },
+      "pretty-print-json@3.0.2": {
+        "integrity": "sha512-5XMO9I6LgOJVCxQikNgf9yAkXd6VqVb6Xeus+qonJW7fQ7wbkap/TWWwz67iikQSnkMhgR++S36asRn+NN876A==",
+        "dependencies": {}
+      },
+      "rollup@4.21.1": {
+        "integrity": "sha512-ZnYyKvscThhgd3M5+Qt3pmhO4jIRR5RGzaSovB6Q7rGNrK5cUncrtLmcTTJVSdcKXyZjW8X8MB0JMSuH9bcAJg==",
+        "dependencies": {
+          "@rollup/rollup-android-arm-eabi": "@rollup/rollup-android-arm-eabi@4.21.1",
+          "@rollup/rollup-android-arm64": "@rollup/rollup-android-arm64@4.21.1",
+          "@rollup/rollup-darwin-arm64": "@rollup/rollup-darwin-arm64@4.21.1",
+          "@rollup/rollup-darwin-x64": "@rollup/rollup-darwin-x64@4.21.1",
+          "@rollup/rollup-linux-arm-gnueabihf": "@rollup/rollup-linux-arm-gnueabihf@4.21.1",
+          "@rollup/rollup-linux-arm-musleabihf": "@rollup/rollup-linux-arm-musleabihf@4.21.1",
+          "@rollup/rollup-linux-arm64-gnu": "@rollup/rollup-linux-arm64-gnu@4.21.1",
+          "@rollup/rollup-linux-arm64-musl": "@rollup/rollup-linux-arm64-musl@4.21.1",
+          "@rollup/rollup-linux-powerpc64le-gnu": "@rollup/rollup-linux-powerpc64le-gnu@4.21.1",
+          "@rollup/rollup-linux-riscv64-gnu": "@rollup/rollup-linux-riscv64-gnu@4.21.1",
+          "@rollup/rollup-linux-s390x-gnu": "@rollup/rollup-linux-s390x-gnu@4.21.1",
+          "@rollup/rollup-linux-x64-gnu": "@rollup/rollup-linux-x64-gnu@4.21.1",
+          "@rollup/rollup-linux-x64-musl": "@rollup/rollup-linux-x64-musl@4.21.1",
+          "@rollup/rollup-win32-arm64-msvc": "@rollup/rollup-win32-arm64-msvc@4.21.1",
+          "@rollup/rollup-win32-ia32-msvc": "@rollup/rollup-win32-ia32-msvc@4.21.1",
+          "@rollup/rollup-win32-x64-msvc": "@rollup/rollup-win32-x64-msvc@4.21.1",
+          "@types/estree": "@types/estree@1.0.5",
+          "fsevents": "fsevents@2.3.3"
+        }
+      },
+      "source-map-js@1.2.0": {
+        "integrity": "sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==",
+        "dependencies": {}
+      },
+      "typescript@5.5.4": {
+        "integrity": "sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==",
+        "dependencies": {}
+      },
+      "vite@5.4.2": {
+        "integrity": "sha512-dDrQTRHp5C1fTFzcSaMxjk6vdpKvT+2/mIdE07Gw2ykehT49O0z/VHS3zZ8iV/Gh8BJJKHWOe5RjaNrW5xf/GA==",
+        "dependencies": {
+          "esbuild": "esbuild@0.21.5",
+          "fsevents": "fsevents@2.3.3",
+          "postcss": "postcss@8.4.41",
+          "rollup": "rollup@4.21.1"
+        }
+      }
+    }
+  },
+  "remote": {
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/+esm": "c77f1f93f53c23e1291d02642573b6cf30d3fcc15d0cc9defb21c078aa5ac1dd",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/abap/abap.js/+esm": "cd4e11fa917acdb4b7fc36717f245f1bd0b45a1ec893d3e2cce1424db7ccef25",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/apex/apex.js/+esm": "34f946166919d84dd9e767e3ba51c3578132a329d869acb5b96b0151d45f2510",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/azcli/azcli.js/+esm": "ccc1fed3c1e6a5362dd2856cb88219c807119b60565f20e3a8a24b68a86a4580",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/bat/bat.js/+esm": "254d4b7ef78e3e3fff888502b85ebc8d8365aaa9be781a1841535a470851f1de",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/bicep/bicep.js/+esm": "c93140c212c0ac612c1a88d19ac9435ccfe439c8d31e358a3ad367867338e8c7",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/cameligo/cameligo.js/+esm": "ef83a5ae6b4d58bda1d32e6e365b2111c5e022946fa53c508c094d8840980eb8",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/clojure/clojure.js/+esm": "45d776d3b6e2c9c68e959886d0c86e7cca2f3ba96e33d16d373698dad2e7b266",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/coffee/coffee.js/+esm": "71c21c6ebe98f6932976c04b0a42d0b56b6631e2649bd8e6bfd08c6d04c6cd41",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/cpp/cpp.js/+esm": "ca1fe05f7944deffb0703621f089264fd28ca5e68613764fa6c1afb573bcb95f",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/csharp/csharp.js/+esm": "a37059af3dc6af67dc8d3fcfc7582418c6244a80b146865a837c41e6890a0495",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/csp/csp.js/+esm": "3251ea9839265e5bc6f992feb8602a51ccbb45e387f5f8eda340aa413d2132a8",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/css/css.js/+esm": "58b2858ef4f3d4ff9336b8e673b2d50235b7c81725e7909a0afb86571a2d5e7b",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/cypher/cypher.js/+esm": "8bac1c9ec3fc6b20ae3defa2f6e8acf56a6da2518c80e079f06a68a08e54345a",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/dart/dart.js/+esm": "66ca81ca0045a30eb8aaa9d0d44d48e34919fbdb2a5c6f4555551fce4b79ec74",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/dockerfile/dockerfile.js/+esm": "3ed3a175b53b5543ccfdeac6d29dfc5fe680c2b3f2f0d106cce486f2046d7d2d",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/ecl/ecl.js/+esm": "58bc06a1a573eaa535476d22a269f35b458602ad6612391b18c994603af66138",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/elixir/elixir.js/+esm": "82264418c46a5ea49ed78a526d9b6a4f2399889b241012a5bdf73687741ff2a6",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/flow9/flow9.js/+esm": "db41d5cca509280333ea3021bdd2db1d65e687af0451c64a75174bed4fdf94c2",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/freemarker2/freemarker2.js/+esm": "53d70d5e97991a28a4edfa6c1854cf92478e9ed37e0da98b5b25f95098b74035",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/fsharp/fsharp.js/+esm": "ebb42ef07bd4591e6af2f12deab1b18aa7c87d4ebeaf371f2f1cb16d6fd08d27",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/go/go.js/+esm": "e429a046e15925a4b93eba6d1eb33111640c0daf4d8108c70445ab4ea5405d69",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/graphql/graphql.js/+esm": "26d7084edfaddc906589eec15786b5b247995085d266bdb72fc1f75871d9e0d7",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/handlebars/handlebars.js/+esm": "05ec996be876d312ee4ca3874e0a9c8ebc3466a6bc862e0059c8839d57cf033b",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/hcl/hcl.js/+esm": "f71a00447887dc1a3644a7f322e9449ff93fecf6d0bc601566eadd8a85cb096b",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/html/html.js/+esm": "ac5b02a0d386c1eda858f3e5df5dee0e9dbe39140f2b5d63763f939ddf9ea948",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/ini/ini.js/+esm": "6347fb50a5eafff967b749dad92900d72a7624d2ac6937f2ef9d73f72a457b56",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/java/java.js/+esm": "3abfb20eef097e5f4d87aa9f016b8dd44f03c286d68c952e22eb7c0dd1cee4ca",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/javascript/javascript.js/+esm": "0d46d9ab5235d6ddc11ef3c337d8304438af12a094b00eba2ffb0141c620342c",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/julia/julia.js/+esm": "f4149b022241310be7292b5d9cd0cfbe584b85d5b4b72e050146cd18a1cfb396",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/kotlin/kotlin.js/+esm": "9cfdeeecfa28b4a5b403889ea241508803aefb989dddfc1242f6eadcb831e97f",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/less/less.js/+esm": "8c9a5bf29a5edbb409d4322e9435fb6be9699edc7dab3850b4bae5ff21ad66bf",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/lexon/lexon.js/+esm": "eaada800500af76b4533607dd5f5f5bc0b863f1b890995e7d842122ce86c28b9",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/liquid/liquid.js/+esm": "82baffe0758b2151f993676b0b122211b0a9b5c4600c1bbb094a9233c207375e",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/lua/lua.js/+esm": "cbb17671fd4f666ca507683b0c856c403dbaf4842b12260b6c955bf9b853b878",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/m3/m3.js/+esm": "e32aa282ff594e2be3969da8026173285255b8a72ff6134d1ab307cb20b9fb8d",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/markdown/markdown.js/+esm": "28b315057638bdd6fe583766e68a695cb855ea74d864f7c32f2ad5beaa4e4df8",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/mips/mips.js/+esm": "febcf806a61fed2938e5b8207fcc9e8483a781a118c1e373c4b6e6c5054a62df",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/msdax/msdax.js/+esm": "663ecd4d39eb4d2fd3822b9ad5ed39a72d0765272512ccb83bd177857aae0206",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/mysql/mysql.js/+esm": "c2a99d1c1b5f4bb2ef6333fc0fe071501a1f8be3d74f6fa23193edb4e6636b81",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/objective-c/objective-c.js/+esm": "8ba9f83668a530a93940c14dc47d9495e680a9348d3964a0a6017cdffe9d6a00",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/pascal/pascal.js/+esm": "2482c1dbf5240ecacdc224d19679fcc3ab699e516f9f0795da0620bf545d3117",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/pascaligo/pascaligo.js/+esm": "55e55cb4510f5a5816247868c8c2c4bb92cd9326cbe76503d86360450d248084",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/perl/perl.js/+esm": "60dfd7f52f4873a84a8c7c50b7c6492b60d4255a7bcea8c582f7827cc4c99e01",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/pgsql/pgsql.js/+esm": "793f07397f2c85b94e0841748d54ea76cabb5dd2fda3ce77894e67a3dcc3d1b3",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/php/php.js/+esm": "06a9ea03d1a8d9398732ecbfced1b40ca6a52b610b2c9bc6b26319d8ca0f48ae",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/pla/pla.js/+esm": "bc5e47183b57e8903e91fa511298ae5277610109c9aade3acb68d3dcf89fd7e2",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/postiats/postiats.js/+esm": "ac5a82b752d7192fd7ae9d5973d853bf96f805a3053315440096362e754cc056",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/powerquery/powerquery.js/+esm": "b098a428b85adf2bbd0d5044323debf8b8c86204a3efaf069e2202abff5e9d72",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/powershell/powershell.js/+esm": "d178eabf500a3a4f6dc9bdd07e5eb995d8c9f1f7a30eb6a9657232fde3c71bdb",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/protobuf/protobuf.js/+esm": "66dc7be048bbf344dab01f37676fba1a51fe7bbeb858661b5295093d8d6cf0dc",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/pug/pug.js/+esm": "6f4d52d0ee13cc88be91e2b8ad31c1678a94397048961061a79ff2f28246e65e",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/python/python.js/+esm": "a2c64971bd79f6e9b640f6f0e2aa6d031c9c38bdf93db09af31c67da2cdff705",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/qsharp/qsharp.js/+esm": "b1db0dedc7443554162a5f370a1ce2ca27de58b3206fbf787c5d12f6b44cd3e1",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/r/r.js/+esm": "6b03d8b083500a8a6a92b5f9a4b5dd7e9bca6de59715d2069dcba17d63e30fb1",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/razor/razor.js/+esm": "37c1e75c8e52d0096378e5f18d6ffe28b83a7f2618ec7a8c8c8b2e1499050e75",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/redis/redis.js/+esm": "402a9ca741a77c100f543ca09535dd3356d6658568644eea6aafd0309befc2d4",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/redshift/redshift.js/+esm": "e05879f51b9c2ec712895f1d5a357f07ba73f1db0c67248b2fbbc3bc53969c09",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/restructuredtext/restructuredtext.js/+esm": "2c5094fbfcf85506d1b198519f5201fde24a443f8b54fbd190f3180a4dd9f89e",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/ruby/ruby.js/+esm": "e131159e9f389540ee91671a7a81880341d3e0b67ecac037e703e798d5f12717",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/rust/rust.js/+esm": "ee6187278f7e4cc9c7fa0a25392de71a5d0d42c446702a57753ca4530de34d32",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/sb/sb.js/+esm": "308d73af90c08a74580b822a3fdcd3c74a7be05e5c61a5f85ebaa2d4152023ec",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/scala/scala.js/+esm": "92afd9c026438c46903cf922cb678d31b5d6233fdf388efd56bb6210109a9038",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/scheme/scheme.js/+esm": "86df46f094f2ac03d5de22571ee516e275f3c0ab78c8e0b78c091924255af8fa",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/scss/scss.js/+esm": "13b217795adc7593e10d664d8ab5c9665358ba8b0f47cc6bca09dc26c2638981",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/shell/shell.js/+esm": "64574b61d34ffbdc881bb064cc518bb8b44e08156ca9352490807432aa7b6560",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/solidity/solidity.js/+esm": "eea664c75f1f0e64e4bbf40b3aaaa35f810548db1d33797ca1fc814cad85c136",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/sophia/sophia.js/+esm": "bacf36e0745a3676e685a70027b69c9674feb95e8debbb762d4b65f199e8c6cb",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/sparql/sparql.js/+esm": "acfca19f518bd62ccc994e7af6b0720813e90ed0811d545f5d64683977e73be3",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/sql/sql.js/+esm": "4676d8fe6ae5898774a8a0a3d1d22013bf0eca7ea8a6dcd20704515a7064c9ec",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/st/st.js/+esm": "99a2f41a6f7948092ed25d6328fd48899b79379ecb257d2faf6abf5f0f4075a6",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/swift/swift.js/+esm": "f9771a8bfe7218a815994b69c68c5c714d8dee1b880e0703e3dad3def75a47bd",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/systemverilog/systemverilog.js/+esm": "143c6807943a3f69fb9dc7b1675137a80fabbbf8b7cdb7d49d5de7d9cbdf0377",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/tcl/tcl.js/+esm": "52d03582380673ca4cd8b23b5095a8be6efde998ec06bcc9244dd3620727a228",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/twig/twig.js/+esm": "169408685dd30d40309769739338c3505159234bb29fadac1fed89f03cb37a10",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/typescript/typescript.js/+esm": "cc3e2b9793bad8ccebe86919cc6294c07fb0760ae6dba3b5b74a4c776217dfa8",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/vb/vb.js/+esm": "3a724b322cdc9f7e68bd59bb32f61a6522d46383a775a06266f1e4636041f8f3",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/wgsl/wgsl.js/+esm": "055676fdee98e99619966ab5c4e3f4cec310aa4db5f62f24417a084ca53bccea",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/xml/xml.js/+esm": "5692e0d7e552c86ffb54f84699db7f421769e47430e8ea707f36cace67d8e69f",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/basic-languages/yaml/yaml.js/+esm": "a384ec9b39fac4d560ce75128f43ef6f886ec9f8f85dce876ac774f433148b47",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/language/css/cssMode.js/+esm": "90204efe893b2c1b5c1e47395fd3a478d0b58d5fca172248a9e56f4dcbec6822",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/language/html/htmlMode.js/+esm": "363c8af8a6f3bf9a0c5796ce68ae3c6fd7f9fd5dff3e13ab4c2cd751b88354be",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/language/json/jsonMode.js/+esm": "1f319b8a230b50c5eb324ed3ddeecfccc60d792cdca20f7cf179ddd69fa49d64",
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/esm/vs/language/typescript/tsMode.js/+esm": "8e91774d864bfcfde4e0b9f5cbbe37480fea79a64e15f3c1abfa48d67f499abf"
+  }
+}
