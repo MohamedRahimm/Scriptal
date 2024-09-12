@@ -1,5 +1,7 @@
 A programming language created in Typescript
 
+# Live [Demo](https://mohamedrahimm.github.io/Scriptal/)
+
 # Dependency [Deno](https://deno.com/) is needed to use this repo
 
 ## Building
