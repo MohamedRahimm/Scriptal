@@ -65,6 +65,7 @@ export interface WhileStmt extends Stmt {
 export interface AssignmentExpr extends Stmt {
   kind: "AssignmentExpr";
   assignee: Stmt;
+  operator?: string;
   value: Stmt;
 }
 export interface BinaryExpr extends Stmt {

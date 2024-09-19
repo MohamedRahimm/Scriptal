@@ -33,7 +33,6 @@ export function evalVarDeclaration(
   const value = declaration.value
     ? evaluate(declaration.value, env)
     : { type: "unassigned", value: "unassigned" } as UnassignedVal;
-
   return env.declareVar(declaration.identifier, value, declaration.constant);
 }
 export function evalFuncDeclaration(

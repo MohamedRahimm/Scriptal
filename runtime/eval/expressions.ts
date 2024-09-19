@@ -123,14 +123,7 @@ export function evalBinaryExpr(
   const rhs = evaluate(binop.right, env);
   const op = binop.operator;
   if (
-    op === "&&" ||
-    op === "||" ||
-    op === "==" ||
-    op === "!=" ||
-    op === "<" ||
-    op === ">" ||
-    op === "<=" ||
-    op === ">="
+    new Set<string>(["&&,||,==,!+,<,>,<=,>="]).has(op)
   ) {
     return evalBoolBinaryExpr(lhs as RuntimeVal, rhs as RuntimeVal, op);
   } else if (lhs.type === "number" && rhs.type === "number") {
@@ -169,7 +162,7 @@ export function evalAssignment(
     return evalMemberExpr(node.assignee as MemberExpr, env, value);
   } //normal variables
   else if (node.assignee.kind !== "Identifier") {
-    throw `Invalid LHS assignment expr ${node.assignee}`;
+    throw `Invalid LHS assignment expr ${JSON.stringify(node)}`;
   }
   const varName = (node.assignee as Identifier).symbol;
   return env.assignVar(varName, evaluate(node.value, env));

@@ -35,6 +35,7 @@ export function tokenize(src: string): Token[] {
     } else if (isInt(src[i])) {
       let num = "";
       let hasDecimal = false;
+      // validates decimals
       for (let j = i; j < src.length; j++) {
         if (!isInt(src[j])) {
           if (src[j] === "." && hasDecimal) break;
@@ -60,24 +61,15 @@ export function tokenize(src: string): Token[] {
       // Unrecognized identifier means it is a user defined symbol.
       else tokens.push(makeToken(ident, TokenType.Identifier, line));
     } else if (threeCharVal) {
-      if (threeCharVal === TokenType.AssignmentOperator) {
-        const prev = tokens[tokens.length - 1];
-        tokens.push(makeToken("=", TokenType.Equals, line));
-        tokens.push(prev);
-        tokens.push(makeToken(twoCharTokens, twoCharVal, line));
-      } else tokens.push(makeToken(threeCharTokens, threeCharVal, line));
+      tokens.push(makeToken(threeCharTokens, threeCharVal, line));
       i += 2;
     } else if (twoCharVal) {
-      if (twoCharVal === TokenType.AssignmentOperator) {
-        const prev = tokens[tokens.length - 1];
-        tokens.push(makeToken("=", TokenType.Equals, line));
-        tokens.push(prev);
-        tokens.push(makeToken(oneCharTokens, oneCharVal, line));
-      } else tokens.push(makeToken(twoCharTokens, twoCharVal, line));
+      tokens.push(makeToken(twoCharTokens, twoCharVal, line));
       i++;
     } else if (oneCharVal) {
       if (oneCharVal === TokenType.Comment) {
         i++;
+        // validates comments
         while (TOKENMAP[src[i]] !== TokenType.Comment && i < src.length) i++;
         if (TOKENMAP[src[i]] !== TokenType.Comment) {
           throw `Missing End of Comment`;
@@ -91,6 +83,7 @@ export function tokenize(src: string): Token[] {
           i++;
         }
         tokens.push(makeToken(str, TokenType.Identifier, line));
+        // adds " token
         tokens.push(makeToken(src[i], TOKENMAP[src[i]], line));
       } else tokens.push(makeToken(oneCharTokens, oneCharVal, line));
     } else {

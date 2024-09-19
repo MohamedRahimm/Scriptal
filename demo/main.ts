@@ -20,7 +20,6 @@ button.addEventListener("click", (e) => {
     e.preventDefault();
     output.innerHTML = "";
     const input = editor.getValue();
-    console.log("input", input);
     if (input) {
         const parser = new Parser();
         const env = globalEnv();

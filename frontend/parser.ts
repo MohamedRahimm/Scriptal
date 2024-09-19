@@ -44,7 +44,7 @@ Primary Expressions
 
 export class Parser {
   private tokens: Token[] = [];
-  idx!: number;
+  private idx!: number;
   private at() {
     return this.tokens[this.idx] as Token;
   }
@@ -209,11 +209,33 @@ export class Parser {
     );
     return body;
   }
+
   private parseAssignmentExpr(inFunction = false, inLoop = false): Stmt {
     const left = this.parseLogicalExpr(inFunction, inLoop);
-    if (this.at().type == TokenType.Equals) {
-      this.eat();
+
+    if (
+      this.at().type == TokenType.Equals ||
+      this.at().type === TokenType.AssignmentOperator
+    ) {
+      let operator: string | undefined = this.eat().value;
+      // if operator is  +=, -=, etc..
+      if (operator.length === 2) operator = operator[0];
+      // if operator is //=,
+      else if (operator.length === 3) operator = operator[0] + operator[1];
+      else operator = undefined;
       const value = this.parseAssignmentExpr(inFunction, inLoop);
+      if (operator) {
+        return {
+          kind: "AssignmentExpr",
+          assignee: left,
+          value: {
+            kind: "BinaryExpr",
+            left,
+            right: value,
+            operator,
+          } as BinaryExpr,
+        } as AssignmentExpr;
+      }
       return {
         value,
         assignee: left,
@@ -528,7 +550,7 @@ export class Parser {
     };
     while (this.at().type !== TokenType.EOF) {
       program.body.push(this.parseStatement());
-      this.expect(TokenType.Semicolon, "Missing ;");
+      this.expect(TokenType.Semicolon, `Missing ; on line ${this.at().line}`);
     }
     return program;
   }
