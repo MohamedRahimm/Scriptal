@@ -550,7 +550,7 @@ export class Parser {
     };
     while (this.at().type !== TokenType.EOF) {
       program.body.push(this.parseStatement());
-      this.expect(TokenType.Semicolon, `Missing ; on line ${this.at().line}`);
+      this.expect(TokenType.Semicolon, `Missing ;`);
     }
     return program;
   }

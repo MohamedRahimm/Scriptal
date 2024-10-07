@@ -135,6 +135,6 @@ export function evalReturnStmt(
   declaration: ReturnStmt,
   env: Environment,
 ): RuntimeVal {
-  const value = evaluate(declaration.value, env)?.value;
-  return { type: "return", value } as ReturnVal;
+  const value = evaluate(declaration.value, env);
+  return value;
 }

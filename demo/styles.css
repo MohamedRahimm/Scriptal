@@ -5,7 +5,8 @@
 body {
     background-color: #1e1e1e;
     color: white;
-    margin: 0
+    margin: 0;
+
 }
 
 main {
@@ -41,7 +42,7 @@ main {
 button {
     position: absolute;
     bottom: 5px;
-    right: 20px;
+    right: 5px;
     background-color: #673F98;
     border: 1px solid #d5d9d9;
     border-radius: 4px;

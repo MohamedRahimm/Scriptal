@@ -10,6 +10,27 @@ const options = {
     language: "javascript",
     automaticLayout: true,
     theme: "vs-dark",
+    overviewRulerLanes: 0,
+    hideCursorInOverviewRuler: true,
+    scrollbar: {
+        vertical: "hidden",
+    },
+    overviewRulerBorder: false,
+    scrollBeyondLastLine: false,
+    fontSize: 20,
+    value: `function isPalindrome(num){
+        let r = len(num)-1;
+        let l = 0;
+        while(l<r){
+            if(num[l]!=num[r]){
+                return false;
+            };
+            l+=1;
+            r-=1;
+        };
+        return true;
+    };
+    print("ISPALINDROME", isPalindrome("12"));`,
 };
 const editor = monaco.editor.create(document.querySelector(".monaco"), options);
 

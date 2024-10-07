@@ -3,7 +3,6 @@ function twoSum(nums,target){
     for(let i = 0;i<len(nums);i+=1){
         for(let j = 0;j<len(nums);j+=1){
             if(nums[i]+nums[j]==target){
-                print(nums[i],nums[j]);
                 return [i,j];
             };
         };
@@ -18,7 +17,6 @@ function isPalindrome(num){
     let l = 0;
     while(l<r){
         if(num[l]!=num[r]){
-            
             return false;
         };
         l+=1;

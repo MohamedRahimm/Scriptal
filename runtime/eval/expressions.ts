@@ -123,7 +123,7 @@ export function evalBinaryExpr(
   const rhs = evaluate(binop.right, env);
   const op = binop.operator;
   if (
-    new Set<string>(["&&,||,==,!+,<,>,<=,>="]).has(op)
+    new Set<string>(["&&", "||", "==", "!=", "<", ">", "<=", ">="]).has(op)
   ) {
     return evalBoolBinaryExpr(lhs as RuntimeVal, rhs as RuntimeVal, op);
   } else if (lhs.type === "number" && rhs.type === "number") {
